@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Digital Humanities AI Hub</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- AOS CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
+  <!-- Plotly JS -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    /* Genel Reset ve Temel Stiller */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #f4f7f6;
+      color: #333;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+    a { text-decoration: none; color: #009688; }
+    /* Dil Toggle Button */
+    .lang-toggle {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 1050;
+    }
+    .lang-toggle .btn { margin: 0 5px; }
+    /* Container */
+    .container-custom {
+      width: 90%;
+      max-width: 1200px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    /* Navbar */
+    .navbar-brand { font-weight: 700; font-size: 1.8em; }
+    .navbar-nav .nav-link { font-size: 1em; margin-right: 15px; }
+    .navbar-nav .nav-link:focus { outline: 2px dashed #fff; }
+    /* Hero Section */
+    .hero {
+      background: url('https://source.unsplash.com/1600x900/?art,technology') no-repeat center center/cover;
+      color: #fff;
+      padding: 120px 0;
+      text-align: center;
+      position: relative;
+    }
+    .hero::after {
+      content: "";
+      background-color: rgba(0,0,0,0.6);
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+    }
+    .hero .hero-content { position: relative; z-index: 2; }
+    .hero h1 { font-size: 3em; font-weight: 700; margin-bottom: 15px; }
+    .hero p { font-size: 1.4em; margin-bottom: 20px; }
+    /* Hero Icons */
+    .hero-icons {
+      margin-top: 20px;
+      color: #fff;
+    }
+    .hero-icons i {
+      font-size: 2.5em;
+      margin: 0 15px;
+      transition: transform 0.3s;
+    }
+    .hero-icons i:hover { transform: scale(1.1); }
+    /* Section Başlıkları */
+    section h2 {
+      font-size: 2em;
+      margin-bottom: 30px;
+      position: relative;
+      padding-bottom: 10px;
+      color: #009688;
+    }
+    section h2::after {
+      content: "";
+      width: 60px;
+      height: 4px;
+      background: #009688;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+    }
+    section h3 { font-size: 1.6em; margin-bottom: 15px; color: #00796b; }
+    section p { margin-bottom: 15px; text-align: justify; }
+    .subsection { margin-left: 20px; border-left: 4px solid #009688; padding-left: 15px; margin-bottom: 25px; }
+    ul, ol { margin-left: 20px; margin-bottom: 15px; }
+    /* Chart Container */
+    .chart-container {
+      margin: 40px 0;
+      padding: 20px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    /* Footer */
+    footer {
+      background: #009688;
+      color: #fff;
+      text-align: center;
+      padding: 20px 0;
+      font-size: 0.9em;
+    }
+    footer a { color: #fff; text-decoration: underline; }
+    /* Responsive Ayarlar */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.2em; }
+      .navbar-nav .nav-link { margin-right: 10px; font-size: 0.9em; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Dil Toggle Buttons -->
+  <div class="lang-toggle">
+    <button class="btn btn-outline-primary" onclick="toggleLanguage('tr')" tabindex="0">TR</button>
+    <button class="btn btn-outline-primary" onclick="toggleLanguage('en')" tabindex="0">EN</button>
+  </div>
+
+  <!-- Türkçe Sürüm -->
+  <div id="lang-tr">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" role="navigation" aria-label="Ana Menü">
+      <div class="container">
+        <a class="navbar-brand" href="#">Dijital İnsani Rehber</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav-tr" aria-controls="navbarNav-tr" aria-expanded="false" aria-label="Menüyü aç">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav-tr">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item"><a class="nav-link" href="#giris" tabindex="0">Giriş</a></li>
+            <li class="nav-item"><a class="nav-link" href="#insani-bilimler" tabindex="0">İnsani Bilimler</a></li>
+            <li class="nav-item"><a class="nav-link" href="#yapay-zeka" tabindex="0">Yapay Zekâ</a></li>
+            <li class="nav-item"><a class="nav-link" href="#calisma-alanlari" tabindex="0">Projeler</a></li>
+            <li class="nav-item"><a class="nav-link" href="#oneriler" tabindex="0">Öneriler</a></li>
+            <li class="nav-item"><a class="nav-link" href="#sonuc" tabindex="0">Sonuç</a></li>
+            <li class="nav-item"><a class="nav-link" href="#kaynaklar" tabindex="0">Kaynaklar</a></li>
+            <li class="nav-item"><a class="nav-link" href="#atolye" tabindex="0">Atölye</a></li>
+            <li class="nav-item"><a class="nav-link" href="#simulasyonlar" tabindex="0">Simülasyonlar</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <header class="hero" role="banner">
+      <div class="container hero-content" data-aos="fade-up">
+        <h1>Dijital İnsani Bilimler ve Yapay Zekâ</h1>
+        <p>TEMEL KAVRAMLAR, ÖRNEK UYGULAMALAR VE ÖNERİLER</p>
+        <p><strong>Ayhan Bozkurt</strong></p>
+        <div class="hero-icons" aria-hidden="true">
+          <i class="fa-solid fa-brain"></i>
+          <i class="fa-solid fa-book-open"></i>
+          <i class="fa-solid fa-pen-nib"></i>
+        </div>
+        <a href="#giris" class="btn btn-lg btn-outline-light mt-4" tabindex="0">Keşfetmeye Başla <i class="fa-solid fa-arrow-down"></i></a>
+      </div>
+    </header>
+
+    <!-- Ana İçerik (TR) -->
+    <div class="container-custom my-5">
+      <!-- 1. Giriş -->
+      <section id="giris" data-aos="fade-right">
+        <h2>Giriş</h2>
+        <p>
+          Günümüzün hızla dijitalleşen dünyasında, insani bilimler alanındaki araştırmalar ve uygulamalar büyük bir dönüşüm geçiriyor. Dijital teknolojiler, veri analitiği ve yapay zekâ, geleneksel yöntemlerle harmanlanarak disiplinlerarası yaklaşımlar sunuyor. Bu rehber, dijital insani bilimlerin ne olduğu, yapay zekâ entegrasyonu, somut örnek uygulamalar ve geleceğe yönelik önerileri kapsamlı biçimde ele almaktadır.
+        </p>
+      </section>
+
+      <!-- 2. Dijital İnsani Bilimler Nedir? -->
+      <section id="insani-bilimler" data-aos="fade-left">
+        <h2>1. Dijital İnsani Bilimler Nedir?</h2>
+        <p>
+          Dijital insani bilimler; edebiyat, tarih, dilbilim, felsefe, sanat tarihi, sosyoloji, antropoloji gibi disiplinlerin, bilgi teknolojileri ve veri bilimi araçlarıyla yeniden ele alınmasıdır. Araştırmacılar; metin koleksiyonları, arşivler ve dijitalleştirilmiş elyazmaları kullanarak geleneksel soruları yeni perspektiflerden inceler.
+        </p>
+        <div class="subsection">
+          <h3>1.1 Dijital Dönüşümün Etkisi</h3>
+          <ul>
+            <li><strong>Yeni Veri Kaynakları:</strong> Kütüphanelerin dijitalleşmesi, dijital arşivlerin çoğalması, sosyal medya ve çevrimiçi kaynakların artması.</li>
+            <li><strong>Disiplinlerarası Etkileşim:</strong> Bilgisayar mühendisliği, veri bilimi ve istatistik gibi alanlarla işbirliğinin güçlenmesi.</li>
+            <li><strong>Araştırma Yöntemlerindeki Değişim:</strong> Metin madenciliği, görselleştirme, ağ analizi, dijital sergiler ve interaktif multimedya sunumları.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 3. Yapay Zekâ ile İnsani Bilimler -->
+      <section id="yapay-zeka" data-aos="fade-right">
+        <h2>2. Yapay Zekâ ile Dijital İnsani Bilimlerin Kesişim Noktası</h2>
+        <p>
+          Yapay zekâ, dijital insani bilimler alanında veri işleme, analiz, anlamlandırma ve tahmin yapma süreçlerini otomatikleştirir. Özellikle doğal dil işleme (NLP), makine öğrenmesi ve derin öğrenme teknikleri, büyük metin veya görsel veri kümelerinin incelenmesinde büyük fırsatlar sunar.
+        </p>
+        <div class="subsection">
+          <h3>2.1 Doğal Dil İşleme (NLP)</h3>
+          <ul>
+            <li><strong>Metin Madenciliği:</strong> Tarihsel belgeler, elyazmaları, kitaplar ve sosyal medya metinleri üzerinde kelime frekans analizi, konu modellemeleri ve duygu analizleri gerçekleştirilir. Bu sayede metinlerin tematik yapısı ve duygu yoğunlukları anlaşılır.</li>
+            <li><strong>Makine Çevirisi ve Anlamsal Analiz:</strong> Farklı dillerdeki metinler karşılaştırılarak, kültürel ve tarihsel içgörüler elde edilir.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>2.2 Görsel ve İşitsel Analiz</h3>
+          <ul>
+            <li><strong>Görüntü Tanıma:</strong> Sanat tarihi ve arşiv çalışmalarında, resim, fotoğraf ve videolar otomatik olarak etiketlenir ve sınıflandırılır.</li>
+            <li><strong>Ses Tanıma:</strong> Arşivlerdeki ses kayıtları metne dönüştürülerek içerik analizine tabi tutulur.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>2.3 Etik ve Sorumluluk</h3>
+          <ul>
+            <li>Veri mahremiyeti, telif hakları ve etik kullanım konularına titizlikle uyulmalıdır.</li>
+            <li>Disiplinlerarası işbirliği, tarihsel ve kültürel verilerin doğru yorumlanmasını sağlayarak hata payını azaltır.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 4. Somut Çalışma Alanları ve Projeler -->
+      <section id="calisma-alanlari" data-aos="fade-up">
+        <h2>3. Somut Çalışma Alanları ve Projeler</h2>
+        <div class="subsection">
+          <h3>Dijital Arşiv ve Kütüphane Projeleri</h3>
+          <ul>
+            <li>Büyük kütüphane koleksiyonlarının dijitalleştirilmesi, verimli indekslenmesi ve yapay zekâ destekli arama motorlarının geliştirilmesi.</li>
+            <li>Örnek: Metin içi arama sistemlerine yapay zekâ tabanlı anlam analizi eklenerek daha doğru sonuçlar elde edilir.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>Metin Madenciliği ile Edebi Eser Analizi</h3>
+          <ul>
+            <li>Derin öğrenme modelleriyle yazarların eserlerindeki tematik, stilistik ve dönemsel değişimler analiz edilir.</li>
+            <li>Örnek: Bir yazarın romanlarında kelime bulutları, duygu analizi ve tematik grafikleri oluşturularak eser analizi yapılır.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>Tarihsel Belgelerin Otomatik Çevirisi ve Yorumlanması</h3>
+          <ul>
+            <li>Tarihi belgeler dijital ortamda saklanır, OCR ve NLP teknikleriyle modern dillere çevrilir; böylece daha geniş erişim sağlanır.</li>
+            <li>Örnek: Osmanlı arşiv belgeleri indekslenir, otomatik çevirileri sunularak araştırmacıların erişimine açılır.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>Kültürel Mirasın Dijitalleştirilmesi</h3>
+          <ul>
+            <li>3B tarama ve modelleme teknikleriyle tarihi eserler dijitalleştirilir.</li>
+            <li>Örnek: Sanal müzeler ve interaktif sergiler oluşturarak kültürel miras geniş kitlelere sunulur.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>Data Görselleştirme ve Hikâyeleştirme</h3>
+          <ul>
+            <li>Tarihsel veya sosyolojik veriler, interaktif grafikler, haritalar ve zaman çizelgeleriyle sunulur.</li>
+            <li>Örnek: Tarihsel bir savaşın coğrafi dağılımı ve demografik etkileri, interaktif bir platformda görselleştirilir.</li>
+          </ul>
+          <!-- İnteraktif Grafik Örneği -->
+          <div class="chart-container" data-aos="fade-up" aria-label="Interactive Chart">
+            <h3>İnteraktif Grafik Örneği</h3>
+            <div id="myChart" role="img" aria-label="Örnek Grafik"></div>
+          </div>
+          <!-- Python Veri Görselleştirme Simülasyonu -->
+          <div class="chart-container" data-aos="fade-up" aria-label="Python Visualization Simulation">
+            <h3>Python Veri Görselleştirme Simülasyonu</h3>
+            <button class="btn btn-primary mb-3" onclick="simulatePythonVisEN()">Animasyonu Başlat</button>
+            <div id="pythonVisChart-en"></div>
+            <p>
+              Açıklama: Bu simülasyonda, Python ile oluşturulan dinamik bar grafik animasyonu kullanılarak verideki zaman içindeki değişim ve trendler 7 örnek üzerinden gösterilir.
+            </p>
+          </div>
+          <!-- Gelişmiş Python Veri Görselleştirme Simülasyonu -->
+          <div class="chart-container" data-aos="fade-up" aria-label="Advanced Python Visualization Simulation">
+            <h3>Gelişmiş Python Veri Görselleştirme Simülasyonu</h3>
+            <button class="btn btn-primary mb-3" onclick="simulatePythonVisTRExtra()">Animasyonu Başlat</button>
+            <div id="pythonVisChartExtra-tr"></div>
+            <p>
+              Açıklama: Bu gelişmiş simülasyonda, çok değişkenli verilerin dinamik görselleştirilmesi; renk geçişleri ve veri etkileşimleri ile 7 örnek üzerinden detaylı analiz sunulur.
+            </p>
+          </div>
+          <!-- Kelime Bulutu Simülasyonu -->
+          <div class="chart-container" data-aos="fade-up" aria-label="Word Cloud Simulation">
+            <h3>Kelime Bulutu Simülasyonu</h3>
+            <button class="btn btn-primary mb-3" onclick="simulateWordCloudTR()">Kelime Bulutunu Göster</button>
+            <div id="wordCloud-tr"></div>
+            <p>
+              Açıklama: Bu simülasyonda, metin içerisinde öne çıkan kelimelerin farklı boyutlarda ve rastgele konumlarda gösterildiği basit bir kelime bulutu oluşturulur. Kelime büyüklükleri, kelimenin metindeki önemini temsil eder.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Öneriler -->
+      <section id="oneriler" data-aos="fade-up">
+        <h2>Öneriler</h2>
+        <ul>
+          <li><strong>Disiplinlerarası İşbirliği:</strong> Yapay zekâ, veri bilimi ve beşeri bilim uzmanlarının ortak projeleri yenilikçi çözümler sunar.</li>
+          <li><strong>Veri Yöntemleri ve Etik Kılavuzlar:</strong> Telif hakları, kişisel veri koruması ve akademik dürüstlük hususlarında titiz çalışma şarttır.</li>
+          <li><strong>Eğitim ve Kapasite Oluşturma:</strong> Atölye çalışmaları, seminerler ve çevrimiçi kaynaklarla beşeri bilim öğrencilerine veri analizi ve programlama becerileri kazandırılmalıdır.</li>
+          <li><strong>Açık Kaynak ve Paylaşım Kültürü:</strong> Araştırma sonuçları, yazılımlar ve veri setleri açık paylaşım esasına göre sunulmalıdır.</li>
+          <li><strong>Sosyal Katkı ve Yaygınlaştırma:</strong> Dijital beşeri bilim projeleri, akademi dışı kamu ve eğitim kurumlarıyla etkileşimi hedeflemelidir.</li>
+        </ul>
+      </section>
+
+      <!-- 6. Sonuç -->
+      <section id="sonuc" data-aos="fade-up">
+        <h2>Sonuç</h2>
+        <p>
+          Dijital beşeri bilimler, geleneksel beşeri bilim yaklaşımlarını yapay zekâ ve dijital teknolojilerle harmanlayarak, yeni araştırma ufukları açmaktadır. Büyük veri analizi, kültürel mirasın dijitalleştirilmesi ve interaktif görselleştirmeler, erişimi güçlendirmekte ve farklı bakış açıları kazandırmaktadır.
+        </p>
+        <p>
+          Yapay zekâ, karmaşık veri setlerini analiz etme ve yorumlama konusunda güçlü bir araçtır. Bu portalda sunulan örnekler ışığında, Digital Humanities alanında NLP, sınıflandırma, tahmin ve diğer yapay zekâ tekniklerinin etkin bir şekilde uygulanması, akademik ve kültürel araştırmalarda önemli katkılar sağlamaktadır.
+        </p>
+      </section>
+
+      <!-- 7. Kaynaklar -->
+      <section id="kaynaklar" data-aos="fade-up">
+        <h2>Kaynaklar ve İlgili Linkler</h2>
+        <ul>
+          <li><a href="http://www.digitalhumanities.org/dhq/" target="_blank">Digital Humanities Quarterly (DHQ)</a></li>
+          <li><a href="https://adho.org/" target="_blank">Alliance of Digital Humanities Organizations (ADHO)</a></li>
+          <li><a href="https://programminghistorian.org/" target="_blank">The Programming Historian</a></li>
+          <li><a href="https://www.digitalottomanstudies.com/post/what-is-digital-humanities" target="_blank">Digital Ottoman Studies</a></li>
+        </ul>
+        <h2>Dijital Beşeri Bilimler: Küresel Kaynaklar Listesi</h2>
+        <p>Dijital beşeri bilimler alanında dünya genelinde öne çıkan kaynaklar, doğrudan bağlantıları ve kısa açıklamalarıyla listelenmiştir.</p>
+        <h3>Temel Kavramlar ve Giriş Kaynakları</h3>
+        <ul>
+          <li>
+            <strong>A Companion to Digital Humanities (2004):</strong> Dijital beşeri bilimlerin ilk dönem tanımını ve kapsamını ortaya koyan 37 makaleden oluşan derleme.  
+            <a href="https://mitpress.mit.edu/9780262528863/digital_humanities/" target="_blank">mitpress.mit.edu</a>
+          </li>
+          <li>
+            <strong>Digital_Humanities (2012):</strong> Anne Burdick, Johanna Drucker ve arkadaşlarının vizyoner raporu.  
+            <a href="https://mitpress.mit.edu/9780262528863/digital_humanities/" target="_blank">mitpress.mit.edu</a>
+          </li>
+          <li>
+            <strong>Debates in the Digital Humanities (2012, 2016, 2019…):</strong> Matthew K. Gold ve Lauren F. Klein editörlüğünde, teorik tartışmaları ve yöntemsel yenilikleri içeren eserler.  
+            <a href="https://upress.umn.edu/book-division/books/debates-in-the-digital-humanities" target="_blank">upress.umn.edu</a>
+          </li>
+          <li>
+            <strong>"Humanities 2.0: Promise, Perils, Predictions" – Cathy Davidson (2012):</strong> Dijital çağın etik ve yöntemsel sorularını irdeleyen çalışma.  
+            <a href="https://timbeilharz.com/" target="_blank">timbeilharz.com</a>
+          </li>
+        </ul>
+        <h3>Akademik Dergiler ve Yayınlar</h3>
+        <ul>
+          <li>
+            <strong>Digital Scholarship in the Humanities (DSH):</strong> Avrupa Dijital Beşeri Bilimler Birliği’nin resmi dergisi, Oxford University Press tarafından yayımlanıyor.  
+            <a href="https://en.wikipedia.org/wiki/Digital_Scholarship_in_the_Humanities" target="_blank">en.wikipedia.org</a>
+          </li>
+          <li>
+            <strong>Digital Humanities Quarterly (DHQ):</strong> ADHO tarafından desteklenen, açık erişimli dergi.  
+            <a href="https://digitalhumanities.org/" target="_blank">digitalhumanities.org</a>
+          </li>
+          <li>
+            <strong>Digital Studies / Le champ numérique:</strong> İngilizce ve Fransızca yayın yapan uluslararası açık erişimli dergi.
+          </li>
+          <li>
+            <strong>International Journal of Digital Humanities:</strong> Springer tarafından yayımlanan, güncel araştırmaları ele alan hakemli dergi.
+          </li>
+          <li>
+            <strong>Journal of Digital Humanities (JDH):</strong> (2011–2014) Çevrimiçi topluluk yayınları arşivinde yer alan açık erişimli dergi.
+          </li>
+        </ul>
+        <h3>Uluslararası Dijital Beşeri Bilimler Projeleri</h3>
+        <ul>
+          <li>
+            <strong>DARIAH:</strong> Avrupa Komisyonu destekli, veri, araç ve yöntem paylaşımını teşvik eden araştırma altyapısı.
+          </li>
+          <li>
+            <strong>Europeana:</strong> AB bünyesinde milyonlarca dijital nesneyi tek platformda toplayan kültürel miras projesi.
+          </li>
+          <li>
+            <strong>Perseus Digital Library:</strong> Tufts Üniversitesi öncülüğünde klasik metinlerin makine tarafından okunabilir versiyonlarını sunan proje.  
+            <a href="http://www.perseus.tufts.edu/hopper/" target="_blank">perseus.tufts.edu</a>
+          </li>
+          <li>
+            <strong>Mapping the Republic of Letters:</strong> Stanford Üniversitesi’nde Aydınlanma Çağı’nın entelektüel ağlarını haritalayan proje.
+          </li>
+          <li>
+            <strong>Old Bailey Online:</strong> Londra Old Bailey’nın 1674–1913 arasındaki duruşma kayıtlarının dijitalleştirilmesi.
+          </li>
+          <li>
+            <strong>Rossetti Archive:</strong> Dante Gabriel Rossetti’nin eserlerinin dijital sunumunu gerçekleştiren proje.
+          </li>
+          <li>
+            <strong>Trans-Atlantic Slave Voyages Database:</strong> 16. yüzyıldan 19. yüzyıla kadar süren köle ticareti kayıtlarını içeren, harita ve istatistiksel analizlerle desteklenen veri tabanı.
+          </li>
+        </ul>
+        <h3>Üniversiteler Bünyesindeki Araştırma Merkezleri</h3>
+        <ul>
+          <li>
+            <strong>Maryland Institute for Technology in the Humanities (MITH):</strong> ABD, Maryland Üniversitesi’nde dijital tarih projelerini destekleyen öncü merkez.  
+            <a href="https://mith.umd.edu/" target="_blank">mith.umd.edu</a>
+          </li>
+          <li>
+            <strong>Roy Rosenzweig Center for History and New Media (RRCHNM):</strong> George Mason Üniversitesi’nde dijital tarih ve çevrimiçi sergileri destekleyen merkez.  
+            <a href="https://rrchnm.org/" target="_blank">rrchnm.org</a>
+          </li>
+          <li>
+            <strong>UCL Centre for Digital Humanities (UCLDH):</strong> University College London’da dijital beşeri bilim araştırmalarını koordine eden öncü merkez.  
+            <a href="https://www.ucl.ac.uk/dh/" target="_blank">ucl.ac.uk/dh</a>
+          </li>
+          <li>
+            <strong>Department of Digital Humanities, King’s College London (DDH):</strong> Dünyanın ilk dijital beşeri bilimler akademik departmanı.  
+            <a href="https://www.kcl.ac.uk/" target="_blank">kcl.ac.uk</a>
+          </li>
+          <li>
+            <strong>Stanford University – Center for Spatial and Textual Analysis (CESTA):</strong> Stanford’da mekânsal ve metinsel analiz projelerini destekleyen merkez.  
+            <a href="https://cesta.stanford.edu/" target="_blank">cesta.stanford.edu</a>
+          </li>
+        </ul>
+        <h3>Açık Kaynak Yazılımlar ve Dijital Araçlar</h3>
+        <ul>
+          <li>
+            <strong>Voyant Tools:</strong> Web tabanlı metin analizi ve kelime bulutu üretimi ortamı.  
+            <a href="https://voyant-tools.org/" target="_blank">voyant-tools.org</a>
+          </li>
+          <li>
+            <strong>Omeka:</strong> Dijital koleksiyonların çevrimiçi sergilenmesi için kullanılan ücretsiz açık kaynak platformu.  
+            <a href="https://omeka.org/" target="_blank">omeka.org</a>
+          </li>
+          <li>
+            <strong>Tropy:</strong> Arşiv fotoğraflarını düzenleyip açıklama eklemek için kullanılan açık kaynak masaüstü yazılımı.  
+            <a href="https://docs.tropy.org/" target="_blank">docs.tropy.org</a>
+          </li>
+          <li>
+            <strong>Gephi:</strong> Ağ grafikleri ve etkileşimli veriler için kullanılan güçlü açık kaynaklı araç.  
+            <a href="https://gephi.github.io/" target="_blank">gephi.github.io</a>
+          </li>
+          <li>
+            <strong>Palladio:</strong> Stanford’un Humanities + Design laboratuvarı tarafından geliştirilen, etkileşimli haritalar, zaman çizelgeleri ve ağ grafikleri oluşturmayı sağlayan web tabanlı araç.  
+            <a href="https://hdlab.stanford.edu/palladio/" target="_blank">hdlab.stanford.edu/palladio/</a>
+          </li>
+          <li>
+            <strong>MALLET:</strong> Metin korpusları üzerinde konu modellemesi ve makine öğrenmesi teknikleri uygulamak için kullanılan Java tabanlı araç.  
+            <a href="http://mallet.cs.umass.edu/" target="_blank">mallet.cs.umass.edu</a>
+          </li>
+          <li>
+            <strong>OpenRefine:</strong> Dağınık verilerin temizlenip düzenlenmesi için güçlü açık kaynaklı araç.  
+            <a href="https://openrefine.org/" target="_blank">openrefine.org</a>
+          </li>
+        </ul>
+        <h3>Eğitim Materyalleri, Rehberler ve Online Kurslar</h3>
+        <ul>
+          <li>
+            <strong>The Programming Historian:</strong> Dijital beşeri bilimler için hakemli dersler ve rehberler sunan açık erişimli proje.  
+            <a href="https://programminghistorian.org/" target="_blank">programminghistorian.org</a>
+          </li>
+          <li>
+            <strong>dariahTeach:</strong> DARIAH tarafından oluşturulan, dijital beşeri bilimler eğitim materyallerinin paylaşıldığı platform.  
+            <a href="https://teach.dariah.eu/" target="_blank">teach.dariah.eu</a>
+          </li>
+          <li>
+            <strong>Digital Humanities Summer Institute (DHSI):</strong> Kanada’nın Victoria Üniversitesi’nde düzenlenen, yoğun atölye şeklinde DH eğitimi veren program.
+          </li>
+          <li>
+            <strong>Harvard University – Introduction to Digital Humanities (DH101):</strong> Ücretsiz çevrimiçi kurs; dijital beşeri bilimlerin temel kavramlarını tanıtır.  
+            <a href="https://www.edx.org/" target="_blank">edx.org</a>
+          </li>
+          <li>
+            <strong>Coursera and EdX:</strong> Dünya genelinde çeşitli üniversitelerin dijital beşeri bilim derslerini sunduğu platformlar.
+          </li>
+          <li>
+            <strong>The Carpentries:</strong> Araştırmacılara temel veri ve yazılım becerileri kazandıran atölyeler.  
+            <a href="https://carpentries.org/" target="_blank">carpentries.org</a>
+          </li>
+        </ul>
+        <h3>Etik, Veri Mahremiyeti ve Telif Konuları</h3>
+        <ul>
+          <li>
+            <strong>Copyright and the Ethics of Access in DH – Nancy Sims (2017):</strong> Dijital arşivlerde telif haklarının nasıl ele alındığını tartışan çalışma.  
+            <a href="https://timbeilharz.com/" target="_blank">timbeilharz.com</a>
+          </li>
+          <li>
+            <strong>"Once we champion openness..." – Cathy Davidson (2012):</strong> Açık erişim ve Web 2.0 uygulamalarının etik sorunlarını irdeleyen makale.  
+            <a href="https://timbeilharz.com/" target="_blank">timbeilharz.com</a>
+          </li>
+          <li>
+            <strong>Documenting the Now:</strong> Topluluk odaklı, sosyal medyanın tarihsel arşivlemesini etik ilkeler çerçevesinde yapan proje.  
+            <a href="https://digitalcommons.macalester.edu/" target="_blank">digitalcommons.macalester.edu</a>
+          </li>
+          <li>
+            <strong>Copyright Issues Relevant to the Creation of a Digital Archive (CLIR Report):</strong> Dijital arşiv oluşturma sürecinde telif sorunlarını kapsamlı şekilde ele alan rapor.
+          </li>
+          <li>
+            <strong>Data Ethics and Privacy Guidelines (ELDAH):</strong> Dijital projelerde veri anonimleştirme ve izin süreçlerine dair etik yönergeler sunar.
+          </li>
+          <li>
+            <strong>Data Feminism & CARE:</strong> Dijital verilerin toplanması, görselleştirilmesi ve etik boyutunun önemini vurgulayan çalışmalar.
+          </li>
+        </ul>
+        <p><em>Tüm bu kaynaklar güncel, saygın ve dijital beşeri bilimler alanına yönelik yüksek kaliteli içerikler sunmaktadır.</em></p>
+      </section>
+
+      <!-- 8. Atölye Önerileri -->
+      <section id="atolye" data-aos="fade-up">
+        <h2>Uygulamalı Oturum / Atölye Önerileri</h2>
+        <ol>
+          <li><strong>Uygulamalı Oturum veya Atölye Çalışması Düzenleme:</strong> ChatGPT veya benzeri yapay zekâ araçlarının kütüphane hizmetlerinde nasıl kullanılacağını örneklerle gösterin.</li>
+          <li><strong>Vaka Analizi Sunumları:</strong> Gerçek projelerden örneklerle, büyük veri ile metin madenciliği, dijital arşiv yönetimi veya otomatik indeksleme konularında vaka analizleri paylaşın.</li>
+          <li><strong>Panel veya Yuvarlak Masa Tartışması Yönetme:</strong> Yapay zekâ ile dijital beşeri bilimlerin entegrasyonu, telif hakları, veri gizliliği ve erişilebilirlik konularını tartışın.</li>
+          <li><strong>Teknik Rehber Hazırlama:</strong> Kütüphanecilikte yapay zekâ araçlarının kullanımıyla ilgili pratik kılavuzlar oluşturun.</li>
+          <li><strong>Erişilebilirlik ve Dahil Etme:</strong> Yapay zekâ tabanlı sohbet botlarının engelli kullanıcılar için sunduğu olanakları değerlendirin.</li>
+          <li><strong>Mikro Öğrenme Oturumları:</strong> 5-10 dakikalık kısa sunumlarla, belirli yapay zekâ özelliklerini tanıtın.</li>
+          <li><strong>Veri Etiği ve Telif Hakları Farkındalığı:</strong> Veri setleri, telif hakları ve kişisel verilerin korunması konusunda bilgilendirici materyaller hazırlayın.</li>
+          <li><strong>Proje Fikirleri Beyin Fırtınası:</strong> Katılımcıları gruplara ayırarak yeni proje fikirleri üretin.</li>
+          <li><strong>Lightning Talks (Hızlı Sunumlar):</strong> Katılımcıların kısa sunumlarla deneyimlerini paylaştığı oturumlar düzenleyin.</li>
+          <li><strong>Raporlama ve Yaygınlaştırma:</strong> Tüm tartışma, öneri ve çıktıların özetlendiği bir rapor veya bülten hazırlayın.</li>
+        </ol>
+      </section>
+
+      <!-- 9. Simülasyonlar -->
+      <section id="simulasyonlar" data-aos="fade-up">
+        <h2>Simülasyonlar</h2>
+        <!-- NLP Simulation -->
+        <div class="subsection">
+          <h3>NLP Simülasyonu</h3>
+          <div class="mb-3">
+            <label for="nlpInput-tr" class="form-label">Bir metin giriniz:</label>
+            <input type="text" id="nlpInput-tr" class="form-control" placeholder="Metni buraya girin">
+          </div>
+          <button class="btn btn-primary mb-3" onclick="simulateNLPSentimentTR()">Analizi Başlat</button>
+          <div id="nlpChart-tr" aria-label="NLP Simülasyon Grafiği"></div>
+          <p>
+            Açıklama: Girilen metin üzerinden duygu analizi gerçekleştirilir. Basit duygu analizi algoritmaları kullanılarak -1 ile +1 arasında 5 örnek duygu skoru üretilir. Bu skorlar, metnin genel duygu durumunu gösterir.
+          </p>
+        </div>
+        <!-- AI Classification Simulation -->
+        <div class="subsection">
+          <h3>Yapay Zekâ Sınıflandırma Simülasyonu</h3>
+          <div class="mb-3">
+            <label for="aiInput-tr" class="form-label">Bir metin giriniz:</label>
+            <input type="text" id="aiInput-tr" class="form-control" placeholder="Metni buraya girin">
+          </div>
+          <button class="btn btn-primary mb-3" onclick="simulateAIClassificationTR()">Sınıflandırmayı Başlat</button>
+          <div id="aiChart-tr" aria-label="Yapay Zekâ Simülasyon Grafiği"></div>
+          <p>
+            Açıklama: Girilen metin, rastgele 5 örnek üzerinden üç kategoriye ayrılır. Sonuç olarak hangi kategorinin kaç örnek aldığını sayısal olarak gösterir. Bu, metnin hangi temaya daha yakın olduğunu anlamaya yardımcı olur.
+          </p>
+        </div>
+        <!-- Karakter Relationship Network Simulation -->
+        <div class="subsection">
+          <h3>Karakterler Arası İlişkiler Ağı Simülasyonu</h3>
+          <button class="btn btn-primary mb-3" onclick="simulateNetworkTR()">Ağı Göster</button>
+          <div id="networkChart-tr" aria-label="Karakterler Arası İlişkiler Ağı Grafiği"></div>
+          <p>
+            Açıklama: Bu simülasyonda, edebi ya da tarihsel metinlerdeki karakterler arasındaki ilişkiler, 5 farklı örnek ağ yapısı üzerinden görselleştirilir. Düğümlerin konumlarındaki rastgele küçük sapmalar ağın yapısal değişkenliğini gösterir.
+          </p>
+        </div>
+        <!-- Topic Distribution Simulation -->
+        <div class="subsection">
+          <h3>Konu Dağılımı Simülasyonu</h3>
+          <button class="btn btn-primary mb-3" onclick="simulateTopicTR()">Konuları Göster</button>
+          <div id="topicChart-tr" aria-label="Konu Dağılımı Grafiği"></div>
+          <p>
+            Açıklama: LDA benzeri konu modelleme algoritmasının çıktılarına benzer şekilde, metin içerisindeki dört farklı temanın göreceli ağırlıkları 5 örnek üzerinden hesaplanır.
+          </p>
+        </div>
+        <!-- Python Visualization Simulation -->
+        <div class="subsection">
+          <h3>Python Veri Görselleştirme Simülasyonu</h3>
+          <button class="btn btn-primary mb-3" onclick="simulatePythonVisTR()">Animasyonu Başlat</button>
+          <div id="pythonVisChart-tr" aria-label="Python Veri Görselleştirme Simülasyonu"></div>
+          <p>
+            Açıklama: Python kullanılarak oluşturulan dinamik bar grafik animasyonu ile veri değerlerinin zaman içindeki değişimi 5 örnek üzerinden gösterilir.
+          </p>
+        </div>
+        <!-- Advanced Python Visualization Simulation -->
+        <div class="subsection">
+          <h3>Gelişmiş Python Veri Görselleştirme Simülasyonu</h3>
+          <button class="btn btn-primary mb-3" onclick="simulatePythonVisTRExtra()">Animasyonu Başlat</button>
+          <div id="pythonVisChartExtra-tr" aria-label="Gelişmiş Python Veri Görselleştirme Simülasyonu"></div>
+          <p>
+            Açıklama: Çok değişkenli veri setlerinin animasyonuyla, verilerdeki dinamik değişim 5 örnek üzerinden, renk geçişleriyle ve ekstra görsel efektlerle detaylandırılır.
+          </p>
+        </div>
+        <!-- Word Cloud Simulation -->
+        <div class="subsection">
+          <h3>Kelime Bulutu Simülasyonu</h3>
+          <button class="btn btn-primary mb-3" onclick="simulateWordCloudTR()">Kelime Bulutunu Göster</button>
+          <div id="wordCloud-tr" aria-label="Kelime Bulutu Simülasyonu"></div>
+          <p>
+            Açıklama: Bu simülasyonda, metin içerisinde öne çıkan kelimeler rastgele konumlarda, farklı boyutlarda gösterilir. Her kelimenin boyutu, metindeki önemini (frekansını) temsil eder.
+          </p>
+        </div>
+        <!-- Digital Archive Simulation -->
+        <div class="subsection">
+          <h3>Dijital Arşiv Simülasyonu</h3>
+          <button class="btn btn-primary mb-3" onclick="simulateDigitalArchiveTR()">Simülasyonu Başlat</button>
+          <div id="archiveChart-tr" aria-label="Dijital Arşiv Simülasyonu"></div>
+          <p>
+            Açıklama: Bu simülasyonda, dijital arşivlerin nasıl sunulabileceği görsel bir örnekle gösterilir. Arka plan görseli ve vurgulanan alanlar, arşiv materyallerinin organize sunumunu simüle eder.
+          </p>
+        </div>
+        <!-- Machine Learning Model Simulation (ROC) -->
+        <div class="subsection">
+          <h3>Makine Öğrenmesi Algoritması Simülasyonu (ROC)</h3>
+          <button class="btn btn-primary mb-3" onclick="simulateMLModelTR()">Simülasyonu Başlat</button>
+          <div id="mlModelChart-tr" aria-label="Makine Öğrenmesi Simülasyonu"></div>
+          <p>
+            Açıklama: ROC eğrisi, bir modelin doğru pozitif ve yanlış pozitif oranlarını gösterir. Bu simülasyonda, 5 örnek ROC eğrisi üretilerek model performansı görselleştirilir.
+          </p>
+        </div>
+        <!-- Prediction Model Simulation -->
+        <div class="subsection">
+          <h3>Tahmin Algoritması Simülasyonu</h3>
+          <button class="btn btn-primary mb-3" onclick="simulatePredictionModelTR()">Simülasyonu Başlat</button>
+          <div id="predictionChart-tr" aria-label="Tahmin Algoritması Simülasyonu"></div>
+          <p>
+            Açıklama: Basit lineer regresyon örneği üzerinden, tahmin modelinin farklı girdi verilerine verdiği tepki 5 örnek üzerinden gösterilir; modelin değişken öngörülerini ortaya koyar.
+          </p>
+        </div>
+      </section>
+    </div>
+    <!-- End of Türkçe Container -->
+  </div>
+
+  <!-- English Version -->
+  <div id="lang-en" style="display: none;">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" role="navigation" aria-label="Main Navigation">
+      <div class="container">
+        <a class="navbar-brand" href="#">Digital Humanities Guide</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav-en" aria-controls="navbarNav-en" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav-en">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item"><a class="nav-link" href="#giris-en" tabindex="0">Introduction</a></li>
+            <li class="nav-item"><a class="nav-link" href="#insani-bilimler-en" tabindex="0">Humanities</a></li>
+            <li class="nav-item"><a class="nav-link" href="#yapay-zeka-en" tabindex="0">Artificial Intelligence</a></li>
+            <li class="nav-item"><a class="nav-link" href="#calisma-alanlari-en" tabindex="0">Projects</a></li>
+            <li class="nav-item"><a class="nav-link" href="#oneriler-en" tabindex="0">Recommendations</a></li>
+            <li class="nav-item"><a class="nav-link" href="#sonuc-en" tabindex="0">Conclusion</a></li>
+            <li class="nav-item"><a class="nav-link" href="#kaynaklar-en" tabindex="0">Sources</a></li>
+            <li class="nav-item"><a class="nav-link" href="#atolye-en" tabindex="0">Workshops</a></li>
+            <li class="nav-item"><a class="nav-link" href="#simulations" tabindex="0">Simulations</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <header class="hero" role="banner">
+      <div class="container hero-content" data-aos="fade-up">
+        <h1>Digital Humanities and Artificial Intelligence</h1>
+        <p>FUNDAMENTAL CONCEPTS, EXAMPLE APPLICATIONS, AND RECOMMENDATIONS</p>
+        <p><strong>Ayhan Bozkurt</strong></p>
+        <div class="hero-icons" aria-hidden="true">
+          <i class="fa-solid fa-brain"></i>
+          <i class="fa-solid fa-book-open"></i>
+          <i class="fa-solid fa-pen-nib"></i>
+        </div>
+        <a href="#giris-en" class="btn btn-lg btn-outline-light mt-4" tabindex="0">Start Exploring <i class="fa-solid fa-arrow-down"></i></a>
+      </div>
+    </header>
+
+    <!-- Main Content (EN) -->
+    <div class="container-custom my-5">
+      <!-- 1. Introduction -->
+      <section id="giris-en" data-aos="fade-right">
+        <h2>Introduction</h2>
+        <p>
+          In today’s rapidly digitalizing world, research and applications in the humanities are undergoing a major transformation. Digital technologies, data analytics, and innovative tools such as artificial intelligence (AI) merge with traditional methods to provide an interdisciplinary approach. This guide comprehensively examines what Digital Humanities are, how AI is integrated, along with concrete example applications and future recommendations.
+        </p>
+      </section>
+
+      <!-- 2. What are Digital Humanities? -->
+      <section id="insani-bilimler-en" data-aos="fade-left">
+        <h2>1. What are Digital Humanities?</h2>
+        <p>
+          Digital Humanities involve re-examining disciplines such as literature, history, linguistics, philosophy, art history, sociology, and anthropology using information technology and data science tools. Researchers utilize large datasets (e.g., text collections, archives, digitized manuscripts) to explore traditional research questions from new perspectives.
+        </p>
+        <div class="subsection">
+          <h3>1.1 The Impact of Digital Transformation</h3>
+          <ul>
+            <li><strong>New Data Sources:</strong> The digitalization of libraries, the proliferation of digital archives, and the rapid growth of online sources and social media.</li>
+            <li><strong>Interdisciplinary Collaboration:</strong> Strengthening interactions among computer engineering, data science, statistics, and the humanities.</li>
+            <li><strong>Changes in Research Methods:</strong> The rise of text mining, visualization, network analysis, digital exhibitions, and interactive multimedia presentations.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 3. Intersection of AI and Digital Humanities -->
+      <section id="yapay-zeka-en" data-aos="fade-right">
+        <h2>2. The Intersection of AI and Digital Humanities</h2>
+        <p>
+          AI plays a crucial role in Digital Humanities by automating processes such as data processing, analysis, interpretation, and prediction. Techniques like natural language processing (NLP), machine learning, and deep learning enable detailed examination of large text and visual datasets.
+        </p>
+        <div class="subsection">
+          <h3>2.1 Natural Language Processing (NLP)</h3>
+          <ul>
+            <li><strong>Text Mining:</strong> Analyzing word frequency, topic modeling, and sentiment analysis on historical texts to reveal underlying patterns and themes.</li>
+            <li><strong>Machine Translation and Semantic Analysis:</strong> Comparing texts across languages to derive cultural and historical insights.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>2.2 Visual and Auditory Analysis</h3>
+          <ul>
+            <li><strong>Image Recognition:</strong> Automatically tagging and classifying images, photographs, and videos from art history and archival studies.</li>
+            <li><strong>Speech Recognition:</strong> Converting archived audio into text for further analysis.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>2.3 Ethics and Responsibility</h3>
+          <ul>
+            <li>Maintaining data privacy, copyright, and ethical usage is essential.</li>
+            <li>Interdisciplinary collaboration ensures proper context and prevents misinterpretation of historical data.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 4. Concrete Fields and Projects -->
+      <section id="calisma-alanlari-en" data-aos="fade-up">
+        <h2>3. Concrete Fields and Projects</h2>
+        <div class="subsection">
+          <h3>Digital Archive and Library Projects</h3>
+          <ul>
+            <li>Digitization, indexing, and development of AI-enhanced search engines for extensive library collections.</li>
+            <li>Example: Incorporating AI-based semantic analysis into full-text search systems to improve result accuracy.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>Literary Analysis through Text Mining</h3>
+          <ul>
+            <li>Utilizing deep learning models to reveal themes, stylistic features, and temporal shifts in literary works.</li>
+            <li>Example: Creating word clouds, performing sentiment analysis, and generating thematic graphs for an author’s complete works.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>Automatic Translation and Annotation of Historical Documents</h3>
+          <ul>
+            <li>Digitizing historical documents and applying OCR and NLP techniques to translate them into modern languages.</li>
+            <li>Example: Indexing Ottoman archival records for enhanced researcher accessibility.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>Digitization of Cultural Heritage</h3>
+          <ul>
+            <li>Converting historical artifacts and archaeological finds into digital formats using 3D scanning and modeling.</li>
+            <li>Example: Creating virtual museums and interactive exhibitions that present cultural heritage to a broader audience.</li>
+          </ul>
+        </div>
+        <div class="subsection">
+          <h3>Data Visualization and Narrativization</h3>
+          <ul>
+            <li>Presenting historical or sociological data through interactive charts, maps, and timelines.</li>
+            <li>Example: Visualizing the geographical spread and demographic effects of a historical battle on an interactive platform.</li>
+          </ul>
+          <!-- Interactive Chart Example -->
+          <div class="chart-container" data-aos="fade-up" aria-label="Interactive Chart">
+            <h3>Interactive Chart Example</h3>
+            <div id="myChart" role="img" aria-label="Example Chart"></div>
+          </div>
+          <!-- Python Visualization Simulation -->
+          <div class="chart-container" data-aos="fade-up" aria-label="Python Visualization Simulation">
+            <h3>Python Visualization Simulation</h3>
+            <button class="btn btn-primary mb-3" onclick="simulatePythonVisEN()">Start Animation</button>
+            <div id="pythonVisChart-en"></div>
+            <p>
+              Explanation: This simulation uses animated bar charts to demonstrate how data values change over time. Seven frames illustrate the trend dynamics clearly.
+            </p>
+          </div>
+          <!-- Advanced Python Visualization Simulation -->
+          <div class="chart-container" data-aos="fade-up" aria-label="Advanced Python Visualization Simulation">
+            <h3>Advanced Python Visualization Simulation</h3>
+            <button class="btn btn-primary mb-3" onclick="simulatePythonVisENExtra()">Start Animation</button>
+            <div id="pythonVisChartExtra-en"></div>
+            <p>
+              Explanation: An advanced demonstration of multi-variable data dynamics. Seven frames with enhanced animations and color transitions illustrate complex data interactions.
+            </p>
+          </div>
+          <!-- Word Cloud Simulation -->
+          <div class="chart-container" data-aos="fade-up" aria-label="Word Cloud Simulation">
+            <h3>Word Cloud Simulation</h3>
+            <button class="btn btn-primary mb-3" onclick="simulateWordCloudEN()">Show Word Cloud</button>
+            <div id="wordCloud-en"></div>
+            <p>
+              Explanation: This simulation generates a word cloud by randomly positioning key words from a sample text with varying font sizes representing their frequency.
+            </p>
+          </div>
+          <!-- Digital Archive Simulation -->
+          <div class="chart-container" data-aos="fade-up" aria-label="Digital Archive Simulation">
+            <h3>Digital Archive Simulation</h3>
+            <button class="btn btn-primary mb-3" onclick="simulateDigitalArchiveEN()">Start Simulation</button>
+            <div id="archiveChart-en"></div>
+            <p>
+              Explanation: This simulation illustrates the visualization of digital archives. A background image and highlighted regions demonstrate how archival materials can be presented digitally.
+            </p>
+          </div>
+          <!-- Machine Learning Model Simulation (ROC) -->
+          <div class="subsection">
+            <h3>Machine Learning Model Simulation (ROC)</h3>
+            <button class="btn btn-primary mb-3" onclick="simulateMLModelEN()">Start Simulation</button>
+            <div id="mlModelChart-en" aria-label="Machine Learning Simulation"></div>
+            <p>
+              Explanation: ROC curves are used to evaluate classifier performance. This simulation generates 5 example ROC curves that illustrate the trade-off between true and false positive rates.
+            </p>
+          </div>
+          <!-- Prediction Model Simulation -->
+          <div class="subsection">
+            <h3>Prediction Model Simulation</h3>
+            <button class="btn btn-primary mb-3" onclick="simulatePredictionModelEN()">Start Simulation</button>
+            <div id="predictionChart-en" aria-label="Prediction Model Simulation"></div>
+            <p>
+              Explanation: This simulation demonstrates a simple regression model. Five example prediction outputs are generated to show the variability in model predictions in response to changing input data.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Recommendations for AI-Based Applications -->
+      <section id="oneriler-en" data-aos="fade-up">
+        <h2>Recommendations for AI-Based Applications</h2>
+        <ul>
+          <li><strong>Interdisciplinary Collaboration:</strong> Joint projects between AI experts, data scientists, and humanities researchers foster innovation.</li>
+          <li><strong>Data Methods and Ethical Guidelines:</strong> Ensure copyright, personal data protection, and academic integrity when working with large datasets.</li>
+          <li><strong>Education and Capacity Building:</strong> Offer workshops, seminars, and online resources to help humanities students acquire skills in data analysis, programming, and AI.</li>
+          <li><strong>Open Source and Sharing Culture:</strong> Share research results, software, and datasets openly to promote diverse analytical approaches.</li>
+          <li><strong>Social Contribution and Dissemination:</strong> Digital humanities projects should extend their impact beyond academia by engaging the public and educational institutions.</li>
+        </ul>
+      </section>
+
+      <!-- 6. Conclusion -->
+      <section id="sonuc-en" data-aos="fade-up">
+        <h2>Conclusion</h2>
+        <p>
+          Digital humanities represent a dynamic field that fuses traditional humanistic approaches with artificial intelligence and digital technologies, opening new research horizons. The analysis of large datasets, digitization of historical and cultural heritage, and interactive visualizations enable researchers and students to access previously unattainable information and develop fresh perspectives.
+        </p>
+        <p>
+          AI simplifies the analysis of complex datasets, boosts research efficiency, and serves as a powerful engine for interdisciplinary projects. The examples provided in this portal demonstrate how NLP, classification, prediction, and other AI techniques can be effectively applied in Digital Humanities.
+        </p>
+      </section>
+
+      <!-- 7. Sources and Related Links -->
+      <section id="kaynaklar-en" data-aos="fade-up">
+        <h2>Sources and Related Links</h2>
+        <ul>
+          <li><a href="http://www.digitalhumanities.org/dhq/" target="_blank">Digital Humanities Quarterly (DHQ)</a></li>
+          <li><a href="https://adho.org/" target="_blank">Alliance of Digital Humanities Organizations (ADHO)</a></li>
+          <li><a href="https://programminghistorian.org/" target="_blank">The Programming Historian</a></li>
+          <li><a href="https://www.digitalottomanstudies.com/post/what-is-digital-humanities" target="_blank">Digital Ottoman Studies</a></li>
+        </ul>
+        <h2>Digital Humanities: Global Resource List</h2>
+        <p>Key resources in the field of Digital Humanities from around the world are listed below with direct links and brief descriptions.</p>
+        <h3>Fundamental Concepts and Introductory Resources</h3>
+        <ul>
+          <li>
+            <strong>A Companion to Digital Humanities (2004):</strong> A comprehensive anthology of 37 essays that outlines the early definitions and scope of Digital Humanities.  
+            <a href="https://mitpress.mit.edu/9780262528863/digital_humanities/" target="_blank">mitpress.mit.edu</a>
+          </li>
+          <li>
+            <strong>Digital_Humanities (2012):</strong> A visionary report by Anne Burdick, Johanna Drucker, and others that examines current practices and future directions in Digital Humanities.  
+            <a href="https://mitpress.mit.edu/9780262528863/digital_humanities/" target="_blank">mitpress.mit.edu</a>
+          </li>
+          <li>
+            <strong>Debates in the Digital Humanities (2012, 2016, 2019…):</strong> A series of anthologies edited by Matthew K. Gold and Lauren F. Klein that compile theoretical discussions and methodological innovations in the field.  
+            <a href="https://upress.umn.edu/book-division/books/debates-in-the-digital-humanities" target="_blank">upress.umn.edu</a>
+          </li>
+          <li>
+            <strong>"Humanities 2.0: Promise, Perils, Predictions" – Cathy Davidson (2012):</strong> An article discussing the ethical challenges and opportunities of open access and Web 2.0 practices in Digital Humanities.  
+            <a href="https://timbeilharz.com/" target="_blank">timbeilharz.com</a>
+          </li>
+        </ul>
+        <h3>Academic Journals and Publications</h3>
+        <ul>
+          <li>
+            <strong>Digital Scholarship in the Humanities (DSH):</strong> The official academic journal of the European Association for Digital Humanities, published by Oxford University Press.  
+            <a href="https://en.wikipedia.org/wiki/Digital_Scholarship_in_the_Humanities" target="_blank">en.wikipedia.org</a>
+          </li>
+          <li>
+            <strong>Digital Humanities Quarterly (DHQ):</strong> An open-access, peer-reviewed journal supported by ADHO that covers all aspects of Digital Humanities.  
+            <a href="https://digitalhumanities.org/" target="_blank">digitalhumanities.org</a>
+          </li>
+          <li>
+            <strong>Digital Studies / Le champ numérique:</strong> A bilingual (English/French) open-access journal that promotes Digital Humanities research internationally.
+          </li>
+          <li>
+            <strong>International Journal of Digital Humanities:</strong> A peer-reviewed academic journal published by Springer addressing contemporary research and innovations.
+          </li>
+          <li>
+            <strong>Journal of Digital Humanities (JDH):</strong> Although discontinued after 2014, this open-access journal remains a valuable archive of early online community publications.
+          </li>
+        </ul>
+        <h3>International Digital Humanities Projects</h3>
+        <ul>
+          <li>
+            <strong>DARIAH:</strong> A large-scale research infrastructure project supported by the European Commission that facilitates data, tools, and methodology sharing across European universities.
+          </li>
+          <li>
+            <strong>Europeana:</strong> An EU initiative that aggregates millions of digital objects from libraries, archives, and museums into a single platform.
+          </li>
+          <li>
+            <strong>Perseus Digital Library:</strong> A pioneering project from Tufts University offering machine-readable versions of classical texts and their translations.  
+            <a href="http://www.perseus.tufts.edu/hopper/" target="_blank">perseus.tufts.edu</a>
+          </li>
+          <li>
+            <strong>Mapping the Republic of Letters:</strong> A project at Stanford University mapping the intellectual networks of the Enlightenment.
+          </li>
+          <li>
+            <strong>Old Bailey Online:</strong> A digital archive of trial records from London's Old Bailey (1674–1913), providing rich historical and legal data.
+          </li>
+          <li>
+            <strong>Rossetti Archive:</strong> A digital edition project presenting the complete works of Dante Gabriel Rossetti with high-resolution images and contextual annotations.
+          </li>
+          <li>
+            <strong>Trans-Atlantic Slave Voyages Database:</strong> A comprehensive database detailing voyages of slave ships from the 16th to the 19th century, featuring map-based visualizations and statistical tools.
+          </li>
+        </ul>
+        <h3>University-Based Research Centers</h3>
+        <ul>
+          <li>
+            <strong>Maryland Institute for Technology in the Humanities (MITH):</strong> A pioneering center at the University of Maryland supporting interdisciplinary digital history projects.  
+            <a href="https://mith.umd.edu/" target="_blank">mith.umd.edu</a>
+          </li>
+          <li>
+            <strong>Roy Rosenzweig Center for History and New Media (RRCHNM):</strong> A center at George Mason University focusing on digital historical research, online exhibitions, and open-source tool development.  
+            <a href="https://rrchnm.org/" target="_blank">rrchnm.org</a>
+          </li>
+          <li>
+            <strong>UCL Centre for Digital Humanities (UCLDH):</strong> A leading interdisciplinary center at University College London coordinating digital humanities research and education.  
+            <a href="https://www.ucl.ac.uk/dh/" target="_blank">ucl.ac.uk/dh</a>
+          </li>
+          <li>
+            <strong>Department of Digital Humanities, King’s College London (DDH):</strong> Recognized as the world’s first academic department in Digital Humanities.  
+            <a href="https://www.kcl.ac.uk/" target="_blank">kcl.ac.uk</a>
+          </li>
+          <li>
+            <strong>Stanford University – Center for Spatial and Textual Analysis (CESTA):</strong> A center supporting projects that analyze historical data through mapping and visualization.  
+            <a href="https://cesta.stanford.edu/" target="_blank">cesta.stanford.edu</a>
+          </li>
+        </ul>
+        <h3>Open Source Software and Digital Tools</h3>
+        <ul>
+          <li>
+            <strong>Voyant Tools:</strong> A web-based text analysis environment for calculating word frequencies, generating word clouds, and more.  
+            <a href="https://voyant-tools.org/" target="_blank">voyant-tools.org</a>
+          </li>
+          <li>
+            <strong>Omeka:</strong> A free, open-source platform for publishing digital collections online, widely used by museums and libraries.  
+            <a href="https://omeka.org/" target="_blank">omeka.org</a>
+          </li>
+          <li>
+            <strong>Tropy:</strong> Desktop software for organizing and annotating archival documents.  
+            <a href="https://docs.tropy.org/" target="_blank">docs.tropy.org</a>
+          </li>
+          <li>
+            <strong>Gephi:</strong> A powerful open source tool for interactive visualization and exploration of network graphs.  
+            <a href="https://gephi.github.io/" target="_blank">gephi.github.io</a>
+          </li>
+          <li>
+            <strong>Palladio:</strong> A web-based tool developed by Stanford’s Humanities + Design lab for creating interactive maps, timelines, and network graphs.  
+            <a href="https://hdlab.stanford.edu/palladio/" target="_blank">hdlab.stanford.edu/palladio/</a>
+          </li>
+          <li>
+            <strong>MALLET:</strong> A Java-based toolkit for topic modeling and machine learning on text corpora.  
+            <a href="http://mallet.cs.umass.edu/" target="_blank">mallet.cs.umass.edu</a>
+          </li>
+          <li>
+            <strong>OpenRefine:</strong> An open source tool for cleaning and transforming messy data.  
+            <a href="https://openrefine.org/" target="_blank">openrefine.org</a>
+          </li>
+        </ul>
+        <h3>Educational Materials, Guides, and Online Courses</h3>
+        <ul>
+          <li>
+            <strong>The Programming Historian:</strong> An open-access project offering peer-reviewed lessons on digital humanities techniques.  
+            <a href="https://programminghistorian.org/" target="_blank">programminghistorian.org</a>
+          </li>
+          <li>
+            <strong>dariahTeach:</strong> A multilingual Digital Humanities education platform curated by DARIAH.  
+            <a href="https://teach.dariah.eu/" target="_blank">teach.dariah.eu</a>
+          </li>
+          <li>
+            <strong>Digital Humanities Summer Institute (DHSI):</strong> An intensive summer workshop program held in Canada.
+          </li>
+          <li>
+            <strong>Harvard University – Introduction to Digital Humanities (DH101):</strong> A free online course introducing digital humanities research techniques.  
+            <a href="https://www.edx.org/" target="_blank">edx.org</a>
+          </li>
+          <li>
+            <strong>Coursera and EdX:</strong> Platforms offering various digital humanities courses worldwide.
+          </li>
+          <li>
+            <strong>The Carpentries:</strong> Workshops that equip researchers with essential data and software skills.  
+            <a href="https://carpentries.org/" target="_blank">carpentries.org</a>
+          </li>
+        </ul>
+        <h3>Ethics, Data Privacy, and Copyright Issues</h3>
+        <ul>
+          <li>
+            <strong>Copyright and the Ethics of Access in DH – Nancy Sims (2017):</strong> A study discussing the challenges of legally sharing digital materials.  
+            <a href="https://timbeilharz.com/" target="_blank">timbeilharz.com</a>
+          </li>
+          <li>
+            <strong>"Once we champion openness..." – Cathy Davidson (2012):</strong> An article examining the ethical issues raised by open access and Web 2.0 practices.  
+            <a href="https://timbeilharz.com/" target="_blank">timbeilharz.com</a>
+          </li>
+          <li>
+            <strong>Documenting the Now:</strong> A community project archiving historic social media content ethically.  
+            <a href="https://digitalcommons.macalester.edu/" target="_blank">digitalcommons.macalester.edu</a>
+          </li>
+          <li>
+            <strong>Copyright Issues Relevant to the Creation of a Digital Archive (CLIR Report):</strong> A report providing comprehensive guidance on copyright issues in digital archiving.
+          </li>
+          <li>
+            <strong>Data Ethics and Privacy Guidelines (ELDAH):</strong> Guidelines focused on data anonymization, consent, and ethical data treatment.
+          </li>
+          <li>
+            <strong>Data Feminism & CARE:</strong> Works emphasizing the importance of inclusivity and community benefit in digital data projects.
+          </li>
+        </ul>
+        <p><em>All the above resources are reputable and provide high-quality content relevant to Digital Humanities.</em></p>
+      </section>
+    </div>
+    <!-- End of English Container -->
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>AI'Han Academy All Rights Reserved 2025 | Ankara</p>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- AOS JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <script>
+    // Initialize AOS Animations
+    AOS.init({ duration: 1000, once: true });
+    
+    // Smooth scroll for internal navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        var target = document.querySelector(this.getAttribute('href'));
+        if(target){
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    // Language Toggle Function
+    function toggleLanguage(lang) {
+      if (lang === 'tr') {
+        document.getElementById('lang-tr').style.display = 'block';
+        document.getElementById('lang-en').style.display = 'none';
+      } else if (lang === 'en') {
+        document.getElementById('lang-tr').style.display = 'none';
+        document.getElementById('lang-en').style.display = 'block';
+      }
+    }
+    
+    /* --- Geliştirilmiş ve Zenginleştirilmiş Simülasyon Fonksiyonları --- */
+    
+    // TR - NLP Simülasyonu (5 Examples)
+    function simulateNLPSentimentTR() {
+      try {
+        var text = document.getElementById("nlpInput-tr").value;
+        if (text.trim() === "") {
+          alert("Lütfen bir metin giriniz!");
+          return;
+        }
+        var scores = [];
+        var labels = [];
+        for (var i = 1; i <= 5; i++){
+           scores.push((Math.random() * 2 - 1).toFixed(2));
+           labels.push("Örnek " + i);
+        }
+        var data = [{
+           x: labels,
+           y: scores,
+           type: 'bar',
+           marker: { color: scores.map(s => s > 0 ? 'green' : (s < 0 ? 'red' : 'gray')) }
+        }];
+        var layout = {
+          title: "NLP Simülasyonu - Metin Duygu Analizi (5 Örnek)",
+          yaxis: { range: [-1, 1], title: "Duygu Skoru" },
+          margin: { t: 50 },
+          annotations: labels.map((lab, i) => ({
+             x: lab,
+             y: scores[i],
+             text: "Skor: " + scores[i],
+             showarrow: true,
+             arrowhead: 7,
+             font: { size: 14 }
+          }))
+        };
+        Plotly.newPlot("nlpChart-tr", data, layout);
+      } catch (error) {
+        console.error("simulateNLPSentimentTR hatası:", error);
+      }
+    }
+    
+    // TR - Yapay Zekâ Sınıflandırma Simülasyonu (5 Examples)
+    function simulateAIClassificationTR() {
+      try {
+        var text = document.getElementById("aiInput-tr").value;
+        if (text.trim() === "") {
+          alert("Lütfen bir metin giriniz!");
+          return;
+        }
+        var categories = ["Kategori A", "Kategori B", "Kategori C"];
+        var counts = {"Kategori A": 0, "Kategori B": 0, "Kategori C": 0};
+        for(var i = 0; i < 5; i++){
+          var chosen = categories[Math.floor(Math.random() * categories.length)];
+          counts[chosen]++;
+        }
+        var data = [{
+          x: categories,
+          y: [counts["Kategori A"], counts["Kategori B"], counts["Kategori C"]],
+          type: 'bar',
+          marker: { color: "#009688" }
+        }];
+        var layout = { 
+          title: "Yapay Zekâ Sınıflandırma Simülasyonu (5 Örnek)",
+          yaxis: { range: [0, 5], title: "Örnek Sayısı" },
+          margin: { t: 50 },
+          annotations: categories.map(cat => ({
+             x: cat,
+             y: counts[cat],
+             text: counts[cat] + " kez seçildi",
+             showarrow: true,
+             arrowhead: 7,
+             font: { size: 14 }
+          }))
+        };
+        Plotly.newPlot("aiChart-tr", data, layout);
+      } catch (error) {
+        console.error("simulateAIClassificationTR hatası:", error);
+      }
+    }
+    
+    // TR - Karakterler Arası İlişkiler Ağı Simülasyonu (5 Examples)
+    function simulateNetworkTR() {
+      try {
+        var baseNodes = [
+          { id: 1, label: "Karakter 1", x: 1, y: 2 },
+          { id: 2, label: "Karakter 2", x: 2, y: 3 },
+          { id: 3, label: "Karakter 3", x: 3, y: 1 },
+          { id: 4, label: "Karakter 4", x: 4, y: 2 }
+        ];
+        var edges = [
+          { source: 1, target: 2 },
+          { source: 2, target: 3 },
+          { source: 3, target: 4 },
+          { source: 4, target: 1 }
+        ];
+        var nodeTrace = {
+          x: baseNodes.map(n => n.x),
+          y: baseNodes.map(n => n.y),
+          mode: 'markers+text',
+          type: 'scatter',
+          text: baseNodes.map(n => n.label),
+          textposition: 'top center',
+          marker: { size: 14, color: '#009688' }
+        };
+        var edgeTrace = { x: [], y: [], mode: 'lines', type: 'scatter', line: { color: '#888', width: 2, dash: 'dot' } };
+        edges.forEach(function(e) {
+          var source = baseNodes.find(n => n.id === e.source);
+          var target = baseNodes.find(n => n.id === e.target);
+          edgeTrace.x.push(source.x, target.x, null);
+          edgeTrace.y.push(source.y, target.y, null);
+        });
+        var frames = [];
+        for (var f = 1; f <= 5; f++) {
+          var frameNodes = baseNodes.map(n => ({
+            id: n.id,
+            label: n.label,
+            x: n.x + Math.random() - 0.5,
+            y: n.y + Math.random() - 0.5
+          }));
+          frames.push({
+            name: 'frame' + f,
+            data: [{
+              x: frameNodes.map(n => n.x),
+              y: frameNodes.map(n => n.y)
+            }]
+          });
+        }
+        var layout = {
+          title: "Karakterler Arası İlişkiler Ağı Simülasyonu (5 Örnek)",
+          margin: { t: 50 },
+          annotations: [{
+            x: 2.5,
+            y: 2.5,
+            text: "Basitleştirilmiş ağ yapısı",
+            showarrow: false,
+            font: { size: 14 }
+          }]
+        };
+        Plotly.newPlot("networkChart-tr", [edgeTrace, nodeTrace], layout).then(function() {
+          Plotly.addFrames("networkChart-tr", frames);
+          Plotly.animate("networkChart-tr", frames.map(f => f.name), {
+            transition: { duration: 700 },
+            frame: { duration: 1200, redraw: true }
+          });
+        });
+      } catch (error) {
+        console.error("simulateNetworkTR hatası:", error);
+      }
+    }
+    
+    // TR - Konu Dağılımı Simülasyonu (5 Examples)
+    function simulateTopicTR() {
+      try {
+        var topics = ["Tema 1", "Tema 2", "Tema 3", "Tema 4"];
+        var frames = [];
+        for (var f = 1; f <= 5; f++){
+          var values = topics.map(() => Math.floor(Math.random() * 50) + 10);
+          frames.push({
+             name: 'frame' + f,
+             data: [{ values: values }]
+          });
+        }
+        var data = [{
+          values: frames[0].data[0].values,
+          labels: topics,
+          type: 'pie',
+          marker: { colors: ['#009688', '#00796b', '#4db6ac', '#80cbc4'] }
+        }];
+        var layout = {
+          title: "Konu Dağılımı Simülasyonu (5 Örnek)",
+          margin: { t: 50 },
+          annotations: [{
+            x: 0.5,
+            y: 0.5,
+            text: "Her dilim, konunun ağırlığını gösterir.",
+            showarrow: false,
+            font: { size: 14 },
+            xref: 'paper',
+            yref: 'paper'
+          }]
+        };
+        Plotly.newPlot("topicChart-tr", data, layout).then(function() {
+          Plotly.addFrames("topicChart-tr", frames);
+          Plotly.animate("topicChart-tr", frames.map(f => f.name), {
+            transition: { duration: 700 },
+            frame: { duration: 1200, redraw: true }
+          });
+        });
+      } catch (error) {
+        console.error("simulateTopicTR hatası:", error);
+      }
+    }
+    
+    // TR - Python Veri Görselleştirme Simülasyonu (5 Examples)
+    function simulatePythonVisTR() {
+      try {
+        var data = [{
+          x: ["Özellik 1", "Özellik 2", "Özellik 3"],
+          y: [10, 20, 15],
+          type: 'bar',
+          marker: { color: '#4db6ac' }
+        }];
+        var layout = { 
+          title: "Python Veri Görselleştirme Simülasyonu (5 Örnek)",
+          margin: { t: 50 },
+          annotations: [{
+            x: "Özellik 2",
+            y: 20,
+            text: "Zaman içindeki değişim",
+            showarrow: true,
+            arrowhead: 7,
+            font: { size: 14 }
+          }]
+        };
+        var frames = [];
+        for (var i = 1; i <= 5; i++){
+          frames.push({
+             name: 'frame' + i,
+             data: [{ y: [10 + i, 20 - i, 15 + (i % 2 === 0 ? i : -i)] }]
+          });
+        }
+        Plotly.newPlot("pythonVisChart-tr", data, layout).then(function() {
+          Plotly.addFrames("pythonVisChart-tr", frames);
+          Plotly.animate("pythonVisChart-tr", frames.map(f => f.name), {
+            transition: { duration: 700 },
+            frame: { duration: 1200, redraw: true }
+          });
+        });
+      } catch (error) {
+        console.error("simulatePythonVisTR hatası:", error);
+      }
+    }
+    
+    // TR - Gelişmiş Python Veri Görselleştirme Simülasyonu (5 Examples)
+    function simulatePythonVisTRExtra() {
+      try {
+        var data = [{
+          x: ["Özellik 1", "Özellik 2", "Özellik 3", "Özellik 4"],
+          y: [10, 20, 15, 5],
+          type: 'bar',
+          marker: { color: '#80cbc4' }
+        }];
+        var layout = { 
+          title: "Gelişmiş Python Veri Görselleştirme Simülasyonu (5 Örnek)",
+          margin: { t: 50 },
+          annotations: [{
+            x: "Özellik 3",
+            y: 15,
+            text: "Gelişmiş animasyon",
+            showarrow: true,
+            arrowhead: 7,
+            font: { size: 14 }
+          }]
+        };
+        var frames = [];
+        for (var i = 1; i <= 5; i++){
+          frames.push({
+            name: 'frame' + i,
+            data: [{
+              y: [10 + Math.floor(Math.random()*5),
+                  20 + Math.floor(Math.random()*5 - 2),
+                  15 + Math.floor(Math.random()*5 - 2),
+                  5 + Math.floor(Math.random()*5 - 2)]
+            }]
+          });
+        }
+        Plotly.newPlot("pythonVisChartExtra-tr", data, layout).then(function() {
+          Plotly.addFrames("pythonVisChartExtra-tr", frames);
+          Plotly.animate("pythonVisChartExtra-tr", frames.map(f => f.name), {
+            transition: { duration: 700 },
+            frame: { duration: 1200, redraw: true }
+          });
+        });
+      } catch (error) {
+        console.error("simulatePythonVisTRExtra hatası:", error);
+      }
+    }
+    
+    // TR - Dijital Arşiv Simülasyonu
+    function simulateDigitalArchiveTR() {
+      try {
+        var layout = {
+          title: "Dijital Arşiv Simülasyonu",
+          images: [{
+            source: "https://source.unsplash.com/600x400/?archive",
+            xref: "x",
+            yref: "y",
+            x: 0,
+            y: 10,
+            sizex: 10,
+            sizey: 8,
+            opacity: 0.8,
+            layer: "below"
+          }],
+          xaxis: { range: [0, 10], showgrid: false, zeroline: false },
+          yaxis: { range: [0, 10], showgrid: false, zeroline: false },
+          margin: { t: 50 },
+          shapes: [{
+            type: "rect",
+            x0: 2, y0: 6,
+            x1: 5, y1: 3,
+            line: { color: "red", width: 3 },
+            fillcolor: "rgba(255,0,0,0.2)"
+          }],
+          annotations: [{
+            x: 3.5,
+            y: 8,
+            text: "Arşiv görüntüsü ve vurgulanan bölge",
+            showarrow: false,
+            font: { size: 14 },
+            xref: 'paper',
+            yref: 'paper'
+          }]
+        };
+        Plotly.newPlot("archiveChart-tr", [], layout);
+      } catch (error) {
+        console.error("simulateDigitalArchiveTR hatası:", error);
+      }
+    }
+    
+    // TR - Makine Öğrenmesi Modeli (ROC Eğrisi) Simülasyonu (5 Examples)
+    function simulateMLModelTR() {
+      try {
+        var baseX = [0, 0.1, 0.2, 0.4, 0.6, 0.8, 1];
+        var baseY = [0, 0.4, 0.6, 0.75, 0.85, 0.92, 1];
+        var trace1 = {
+          x: baseX,
+          y: baseY,
+          mode: 'lines+markers',
+          name: 'ROC Eğrisi',
+          line: { shape: 'spline', color: '#00796b' }
+        };
+        var data = [trace1];
+        var frames = [];
+        for (var i = 1; i <= 5; i++){
+          var newY = baseY.map(function(y) {
+            return y + (Math.random() * 0.1 - 0.05);
+          });
+          frames.push({
+            name: "frame" + i,
+            data: [{ y: newY }]
+          });
+        }
+        var layout = { 
+          title: "Makine Öğrenmesi Algoritması (ROC Eğrisi) Simülasyonu (5 Örnek)",
+          xaxis: { title: "False Positive Rate" },
+          yaxis: { title: "True Positive Rate", range: [0, 1] },
+          margin: { t: 50 },
+          annotations: [{
+            x: 0.5,
+            y: 0.75,
+            text: "Model Performansı: ROC eğrisi, bir modelin sınıflandırma başarısını gösterir.",
+            showarrow: false,
+            font: { size: 14 },
+            xref: 'paper',
+            yref: 'paper'
+          }]
+        };
+        Plotly.newPlot("mlModelChart-tr", data, layout).then(function() {
+          Plotly.addFrames("mlModelChart-tr", frames);
+          Plotly.animate("mlModelChart-tr", frames.map(f => f.name), {
+            transition: { duration: 700 },
+            frame: { duration: 1200, redraw: true }
+          });
+        });
+      } catch (error) {
+        console.error("simulateMLModelTR hatası:", error);
+      }
+    }
+    
+    // TR - Tahmin Algoritması Simülasyonu (5 Examples)
+    function simulatePredictionModelTR() {
+      try {
+        var frames = [];
+        for (var i = 1; i <= 5; i++){
+          var x = [];
+          var y = [];
+          for (var j = 0; j < 10; j++){
+             x.push(j);
+             y.push(j * 2 + (Math.random() * 4 - 2));
+          }
+          frames.push({
+            name: 'frame' + i,
+            data: [{ x: x, y: y }]
+          });
+        }
+        var initFrame = frames[0].data[0];
+        var trace = {
+          x: initFrame.x,
+          y: initFrame.y,
+          mode: 'lines+markers',
+          name: 'Tahmin Modeli',
+          line: { shape: 'linear', color: '#ff5722' }
+        };
+        var data = [trace];
+        var layout = { 
+          title: "Tahmin Algoritması Simülasyonu (5 Örnek)",
+          xaxis: { title: "X Değeri" },
+          yaxis: { title: "Tahmin Değeri" },
+          margin: { t: 50 },
+          annotations: [{
+            x: 5,
+            y: initFrame.y[5],
+            text: "Model Tahmini: Basit lineer regresyon örneği.",
+            showarrow: true,
+            arrowhead: 7,
+            font: { size: 14 }
+          }]
+        };
+        Plotly.newPlot("predictionChart-tr", data, layout).then(function() {
+          Plotly.addFrames("predictionChart-tr", frames);
+          Plotly.animate("predictionChart-tr", frames.map(f => f.name), {
+            transition: { duration: 700 },
+            frame: { duration: 1200, redraw: true }
+          });
+        });
+      } catch (error) {
+        console.error("simulatePredictionModelTR hatası:", error);
+      }
+    }
+    
+    // TR - Kelime Bulutu Simülasyonu
+    function simulateWordCloudTR() {
+      try {
+        // Örnek kelimeler ve rastgele frekans değerleri
+        var words = ["tarih", "edebiyat", "kültür", "sanat", "arşiv", "veri", "araştırma", "dijital", "insani", "bilimler"];
+        var data = [];
+        for (var i = 0; i < words.length; i++) {
+          data.push({
+            x: Math.random() * 100,
+            y: Math.random() * 100,
+            text: words[i],
+            marker: {
+              size: (Math.random() * 40) + 10, // kelime büyüklüğü frekansa göre simule ediliyor
+              color: "#009688"
+            },
+            mode: 'text'
+          });
+        }
+        var layout = {
+          title: "Kelime Bulutu Simülasyonu",
+          xaxis: { showgrid: false, zeroline: false, showticklabels: false },
+          yaxis: { showgrid: false, zeroline: false, showticklabels: false },
+          margin: { t: 50 }
+        };
+        Plotly.newPlot("wordCloud-tr", data, layout);
+      } catch (error) {
+        console.error("simulateWordCloudTR hatası:", error);
+      }
+    }
+    
+    // EN - NLP Simulation (5 Examples)
+    function simulateNLPSentimentEN() {
+      try {
+        var text = document.getElementById("nlpInput-en").value;
+        if (text.trim() === "") {
+          alert("Please enter some text!");
+          return;
+        }
+        var scores = [];
+        var labels = [];
+        for (var i = 1; i <= 5; i++){
+           scores.push((Math.random() * 2 - 1).toFixed(2));
+           labels.push("Example " + i);
+        }
+        var data = [{
+           x: labels,
+           y: scores,
+           type: 'bar',
+           marker: { color: scores.map(s => s > 0 ? 'green' : (s < 0 ? 'red' : 'gray')) }
+        }];
+        var layout = {
+          title: "NLP Simulation - Sentiment Analysis (5 Examples)",
+          yaxis: { range: [-1, 1], title: "Sentiment Score" },
+          margin: { t: 50 },
+          annotations: labels.map((lab, i) => ({
+             x: lab,
+             y: scores[i],
+             text: "Score: " + scores[i],
+             showarrow: true,
+             arrowhead: 7,
+             font: { size: 14 }
+          }))
+        };
+        Plotly.newPlot("nlpChart-en", data, layout);
+      } catch(error) {
+        console.error("simulateNLPSentimentEN error:", error);
+      }
+    }
+    
+    // EN - AI Classification Simulation (5 Examples)
+    function simulateAIClassificationEN() {
+      try {
+        var text = document.getElementById("aiInput-en").value;
+        if (text.trim() === "") {
+          alert("Please enter some text!");
+          return;
+        }
+        var categories = ["Category A", "Category B", "Category C"];
+        var counts = {"Category A": 0, "Category B": 0, "Category C": 0};
+        for (var i = 0; i < 5; i++){
+          var chosen = categories[Math.floor(Math.random() * categories.length)];
+          counts[chosen]++;
+        }
+        var data = [{
+          x: categories,
+          y: [counts["Category A"], counts["Category B"], counts["Category C"]],
+          type: 'bar',
+          marker: { color: "#009688" }
+        }];
+        var layout = { 
+          title: "AI Classification Simulation (5 Examples)",
+          yaxis: { range: [0, 5], title: "Frequency" },
+          margin: { t: 50 },
+          annotations: categories.map(cat => ({
+             x: cat,
+             y: counts[cat],
+             text: counts[cat] + " times selected",
+             showarrow: true,
+             arrowhead: 7,
+             font: { size: 14 }
+          }))
+        };
+        Plotly.newPlot("aiChart-en", data, layout);
+      } catch(error) {
+        console.error("simulateAIClassificationEN error:", error);
+      }
+    }
+    
+    // EN - Character Relationship Network Simulation (5 Examples)
+    function simulateNetworkEN() {
+      try {
+        var nodes = [
+          { id: 1, label: "Character 1", x: 1, y: 2 },
+          { id: 2, label: "Character 2", x: 2, y: 3 },
+          { id: 3, label: "Character 3", x: 3, y: 1 },
+          { id: 4, label: "Character 4", x: 4, y: 2 }
+        ];
+        var edges = [
+          { source: 1, target: 2 },
+          { source: 2, target: 3 },
+          { source: 3, target: 4 },
+          { source: 4, target: 1 }
+        ];
+        var nodeTrace = {
+          x: nodes.map(n => n.x),
+          y: nodes.map(n => n.y),
+          mode: 'markers+text',
+          type: 'scatter',
+          text: nodes.map(n => n.label),
+          textposition: 'top center',
+          marker: { size: 14, color: '#009688' }
+        };
+        var edgeTrace = { x: [], y: [], mode: 'lines', type: 'scatter', line: { color: '#888', width: 2, dash: 'dot' } };
+        edges.forEach(function(e) {
+          var source = nodes.find(n => n.id === e.source);
+          var target = nodes.find(n => n.id === e.target);
+          edgeTrace.x.push(source.x, target.x, null);
+          edgeTrace.y.push(source.y, target.y, null);
+        });
+        var frames = [];
+        for (var f = 1; f <= 5; f++) {
+          var frameNodes = nodes.map(n => ({
+              id: n.id,
+              label: n.label,
+              x: n.x + Math.random() - 0.5,
+              y: n.y + Math.random() - 0.5
+          }));
+          frames.push({
+            name: "frame" + f,
+            data: [{
+              x: frameNodes.map(n => n.x),
+              y: frameNodes.map(n => n.y)
+            }]
+          });
+        }
+        var layout = {
+          title: "Character Relationship Network Simulation (5 Examples)",
+          margin: { t: 50 },
+          annotations: [{
+            x: 2.5,
+            y: 2.5,
+            text: "Simplified network structure",
+            showarrow: false,
+            font: { size: 14 }
+          }]
+        };
+        Plotly.newPlot("networkChart-en", [edgeTrace, nodeTrace], layout).then(function() {
+          Plotly.addFrames("networkChart-en", frames);
+          Plotly.animate("networkChart-en", frames.map(f => f.name), {
+            transition: { duration: 700 },
+            frame: { duration: 1200, redraw: true }
+          });
+        });
+      } catch(error) {
+        console.error("simulateNetworkEN error:", error);
+      }
+    }
+    
+    // EN - Topic Distribution Simulation (5 Examples)
+    function simulateTopicEN() {
+      try {
+        var topics = ["Topic 1", "Topic 2", "Topic 3", "Topic 4"];
+        var frames = [];
+        for (var f = 1; f <= 5; f++){
+          var values = topics.map(() => Math.floor(Math.random() * 50) + 10);
+          frames.push({
+             name: 'frame' + f,
+             data: [{ values: values }]
+          });
+        }
+        var data = [{
+          values: frames[0].data[0].values,
+          labels: topics,
+          type: 'pie',
+          marker: { colors: ['#009688', '#00796b', '#4db6ac', '#80cbc4'] }
+        }];
+        var layout = {
+          title: "Topic Distribution Simulation (5 Examples)",
+          margin: { t: 50 },
+          annotations: [{
+            x: 0.5,
+            y: 0.5,
+            text: "Each slice indicates the relative weight of a topic",
+            showarrow: false,
+            font: { size: 14 },
+            xref: 'paper',
+            yref: 'paper'
+          }]
+        };
+        Plotly.newPlot("topicChart-en", data, layout).then(function() {
+          Plotly.addFrames("topicChart-en", frames);
+          Plotly.animate("topicChart-en", frames.map(f => f.name), {
+            transition: { duration: 700 },
+            frame: { duration: 1200, redraw: true }
+          });
+        });
+      } catch(error) {
+        console.error("simulateTopicEN error:", error);
+      }
+    }
+    
+    // EN - Python Visualization Simulation (5 Examples)
+    function simulatePythonVisEN() {
+      try {
+        var data = [{
+          x: ["Feature 1", "Feature 2", "Feature 3"],
+          y: [10, 20, 15],
+          type: 'bar',
+          marker: { color: '#4db6ac' }
+        }];
+        var layout = { 
+          title: "Python Visualization Simulation (5 Examples)",
+          margin: { t: 50 },
+          annotations: [{
+            x: "Feature 2",
+            y: 20,
+            text: "Dynamic changes in data over time",
+            showarrow: true,
+            arrowhead: 7,
+            font: { size: 14 }
+          }]
+        };
+        var frames = [];
+        for (var i = 1; i <= 5; i++){
+          frames.push({
+             name: 'frame' + i,
+             data: [{ y: [10 + i, 20 - i, 15 + (i % 2 === 0 ? i : -i)] }]
+          });
+        }
+        Plotly.newPlot("pythonVisChart-en", data, layout).then(function() {
+          Plotly.addFrames("pythonVisChart-en", frames);
+          Plotly.animate("pythonVisChart-en", frames.map(f => f.name), {
+            transition: { duration: 700 },
+            frame: { duration: 1200, redraw: true }
+          });
+        });
+      } catch (error) {
+        console.error("simulatePythonVisEN error:", error);
+      }
+    }
+    
+    // EN - Advanced Python Visualization Simulation (5 Examples)
+    function simulatePythonVisENExtra() {
+      try {
+        var data = [{
+          x: ["Feature 1", "Feature 2", "Feature 3", "Feature 4"],
+          y: [10, 20, 15, 5],
+          type: 'bar',
+          marker: { color: '#80cbc4' }
+        }];
+        var layout = { 
+          title: "Advanced Python Visualization Simulation (5 Examples)",
+          margin: { t: 50 },
+          annotations: [{
+            x: "Feature 3",
+            y: 15,
+            text: "Enhanced animation with additional dynamics",
+            showarrow: true,
+            arrowhead: 7,
+            font: { size: 14 }
+          }]
+        };
+        var frames = [];
+        for (var i = 1; i <= 5; i++){
+          frames.push({
+            name: 'frame' + i,
+            data: [{
+              y: [10 + Math.floor(Math.random()*5), 20 + Math.floor(Math.random()*5 - 2), 15 + Math.floor(Math.random()*5 - 2), 5 + Math.floor(Math.random()*5 - 2)]
+            }]
+          });
+        }
+        Plotly.newPlot("pythonVisChartExtra-en", data, layout).then(function() {
+          Plotly.addFrames("pythonVisChartExtra-en", frames);
+          Plotly.animate("pythonVisChartExtra-en", frames.map(f => f.name), {
+            transition: { duration: 700 },
+            frame: { duration: 1200, redraw: true }
+          });
+        });
+      } catch (error) {
+        console.error("simulatePythonVisENExtra error:", error);
+      }
+    }
+    
+    // EN - Digital Archive Simulation
+    function simulateDigitalArchiveEN() {
+      try {
+        var layout = {
+          title: "Digital Archive Simulation",
+          images: [{
+            source: "https://source.unsplash.com/600x400/?archive",
+            xref: "x",
+            yref: "y",
+            x: 0,
+            y: 10,
+            sizex: 10,
+            sizey: 8,
+            opacity: 0.8,
+            layer: "below"
+          }],
+          xaxis: { range: [0, 10], showgrid: false, zeroline: false },
+          yaxis: { range: [0, 10], showgrid: false, zeroline: false },
+          margin: { t: 50 },
+          shapes: [{
+            type: "rect",
+            x0: 2, y0: 6,
+            x1: 5, y1: 3,
+            line: { color: "red", width: 3 },
+            fillcolor: "rgba(255,0,0,0.2)"
+          }],
+          annotations: [{
+            x: 3.5,
+            y: 8,
+            text: "Background archive image with highlighted section",
+            showarrow: false,
+            font: { size: 14 },
+            xref: 'paper',
+            yref: 'paper'
+          }]
+        };
+        Plotly.newPlot("archiveChart-en", [], layout);
+      } catch (error) {
+        console.error("simulateDigitalArchiveEN error:", error);
+      }
+    }
+    
+    // EN - Machine Learning Model Simulation (ROC) (5 Examples)
+    function simulateMLModelEN() {
+      try {
+        var baseX = [0, 0.1, 0.2, 0.4, 0.6, 0.8, 1];
+        var baseY = [0, 0.4, 0.6, 0.75, 0.85, 0.92, 1];
+        var trace1 = {
+          x: baseX,
+          y: baseY,
+          mode: 'lines+markers',
+          name: 'ROC Curve',
+          line: { shape: 'spline', color: '#00796b' }
+        };
+        var data = [trace1];
+        var frames = [];
+        for (var i = 1; i <= 5; i++){
+          var newY = baseY.map(function(y) {
+             return y + (Math.random()*0.1 - 0.05);
+          });
+          frames.push({
+             name: "frame" + i,
+             data: [{ y: newY }]
+          });
+        }
+        var layout = { 
+          title: "Machine Learning Model Simulation (ROC Curve) (5 Examples)",
+          xaxis: { title: "False Positive Rate" },
+          yaxis: { title: "True Positive Rate", range: [0, 1] },
+          margin: { t: 50 },
+          annotations: [{
+            x: 0.5,
+            y: 0.75,
+            text: "Model performance summary: The ROC curve illustrates the trade-off between true positive and false positive rates.",
+            showarrow: false,
+            font: { size: 14 },
+            xref: 'paper',
+            yref: 'paper'
+          }]
+        };
+        Plotly.newPlot("mlModelChart-en", data, layout).then(function() {
+          Plotly.addFrames("mlModelChart-en", frames);
+          Plotly.animate("mlModelChart-en", frames.map(f => f.name), {
+            transition: { duration: 700 },
+            frame: { duration: 1200, redraw: true }
+          });
+        });
+      } catch (error) {
+        console.error("simulateMLModelEN error:", error);
+      }
+    }
+    
+    // EN - Prediction Model Simulation (5 Examples)
+    function simulatePredictionModelEN() {
+      try {
+        var frames = [];
+        for (var i = 1; i <= 5; i++){
+          var x = [];
+          var y = [];
+          for (var j = 0; j < 10; j++){
+            x.push(j);
+            y.push(j * 2 + (Math.random() * 4 - 2));
+          }
+          frames.push({
+            name: 'frame' + i,
+            data: [{ x: x, y: y }]
+          });
+        }
+        var initFrame = frames[0].data[0];
+        var trace = {
+          x: initFrame.x,
+          y: initFrame.y,
+          mode: 'lines+markers',
+          name: 'Prediction Model',
+          line: { shape: 'linear', color: '#ff5722' }
+        };
+        var data = [trace];
+        var layout = { 
+          title: "Prediction Model Simulation (5 Examples)",
+          xaxis: { title: "X Value" },
+          yaxis: { title: "Predicted Value" },
+          margin: { t: 50 },
+          annotations: [{
+            x: 5,
+            y: initFrame.y[5],
+            text: "A simple linear regression example demonstrating prediction variability.",
+            showarrow: true,
+            arrowhead: 7,
+            font: { size: 14 }
+          }]
+        };
+        Plotly.newPlot("predictionChart-en", data, layout).then(function() {
+          Plotly.addFrames("predictionChart-en", frames);
+          Plotly.animate("predictionChart-en", frames.map(f => f.name), {
+            transition: { duration: 700 },
+            frame: { duration: 1200, redraw: true }
+          });
+        });
+      } catch (error) {
+        console.error("simulatePredictionModelEN error:", error);
+      }
+    }
+    
+    // EN - Word Cloud Simulation
+    function simulateWordCloudEN() {
+      try {
+        // Example words and random frequency simulation
+        var words = ["history", "literature", "culture", "art", "archive", "data", "research", "digital", "humanities", "analysis"];
+        var data = [];
+        for (var i = 0; i < words.length; i++) {
+          data.push({
+            x: Math.random() * 100,
+            y: Math.random() * 100,
+            text: words[i],
+            marker: {
+              size: (Math.random() * 40) + 10,
+              color: "#00796b"
+            },
+            mode: 'text'
+          });
+        }
+        var layout = {
+          title: "Word Cloud Simulation",
+          xaxis: { showgrid: false, zeroline: false, showticklabels: false },
+          yaxis: { showgrid: false, zeroline: false, showticklabels: false },
+          margin: { t: 50 }
+        };
+        Plotly.newPlot("wordCloud-en", data, layout);
+      } catch (error) {
+        console.error("simulateWordCloudEN error:", error);
+      }
+    }
+  </script>
+</body>
+</html>
+
