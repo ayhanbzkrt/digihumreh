@@ -147,6 +147,7 @@
             <li class="nav-item"><a class="nav-link" href="#kaynaklar" tabindex="0">Kaynaklar</a></li>
             <li class="nav-item"><a class="nav-link" href="#atolye" tabindex="0">Atölye</a></li>
             <li class="nav-item"><a class="nav-link" href="#simulasyonlar" tabindex="0">Simülasyonlar</a></li>
+            <li class="nav-item"><a class="nav-link" href="#framework-lab" tabindex="0">Veri & Framework</a></li>
           </ul>
         </div>
       </div>
@@ -1197,6 +1198,177 @@ Fatma Yılmaz, İstanbul, 2023</textarea>
         </div>
 
       </section>
+
+      <!-- Tarayıcı İçi Veri ve Framework Laboratuvarı -->
+      <section id="framework-lab" data-aos="fade-up">
+        <h2>Tarayıcı İçi Veri ve Framework Laboratuvarı</h2>
+        <p>
+          Bu bölüm, mevcut portalın tüm laboratuvarlarını ortak bir çalışma verisi üzerinde birleştirir. Veriler mümkün olduğunca tarayıcı içinde işlenir; yerel dosyalar sunucuya gönderilmez. Haricî veri ve model servisleri yalnız kullanıcı ilgili düğmeye bastığında yüklenir.
+        </p>
+
+        <div class="subsection">
+          <h3>1. Birleşik Veri Çalışma Alanı</h3>
+          <p>CSV, JSON, TXT, XML/TEI, ZIP ve çalışma alanı JSON dosyalarını yükleyin. Kaggle veri setlerinden indirilen ZIP paketleri de doğrudan açılabilir.</p>
+          <div class="row">
+            <div class="col-md-7 mb-3">
+              <label for="datasetFile-tr" class="form-label">Yerel dosya veya Kaggle ZIP paketi:</label>
+              <input id="datasetFile-tr" class="form-control" type="file" accept=".csv,.json,.txt,.xml,.tei,.zip,.parquet,.dhworkspace.json" onchange="handleDatasetFile(event,'tr')">
+            </div>
+            <div class="col-md-5 mb-3">
+              <label class="form-label">Hazır örnek veri:</label>
+              <select id="sampleDataset-tr" class="form-control">
+                <option value="newspapers">Tarihî gazete korpusu</option>
+                <option value="network">Mektuplaşma ağı</option>
+                <option value="geo">Tarihsel yer ve olaylar</option>
+                <option value="metadata">Kültürel miras metadata kayıtları</option>
+                <option value="regression">Sayısal eğitim verisi</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-3">
+            <button class="btn btn-primary" onclick="loadSampleDataset('tr')">Örnek Veriyi Yükle</button>
+            <button class="btn btn-outline-primary" onclick="exportCurrentDataset('csv','tr')">CSV İndir</button>
+            <button class="btn btn-outline-primary" onclick="exportCurrentDataset('json','tr')">JSON İndir</button>
+            <button class="btn btn-outline-primary" onclick="downloadWorkspace('tr')">Çalışma Alanını İndir</button>
+            <button class="btn btn-outline-primary" onclick="saveWorkspaceIndexedDB('tr')">Tarayıcıya Kaydet</button>
+            <button class="btn btn-outline-primary" onclick="restoreWorkspaceIndexedDB('tr')">Kayıtlı Çalışmayı Aç</button>
+          </div>
+          <div id="archivePickerWrap-tr" class="mb-3" style="display:none;">
+            <label for="archiveEntry-tr" class="form-label">ZIP içinden çalışılacak dosya:</label>
+            <div class="input-group"><select id="archiveEntry-tr" class="form-control"></select><button class="btn btn-primary" onclick="loadSelectedArchiveEntry('tr')">Seçileni Aç</button></div>
+          </div>
+          <div class="row">
+            <div class="col-md-9 mb-3"><input id="datasetURL-tr" class="form-control" placeholder="CORS izinli CSV/JSON/TXT URL'si veya GitHub raw bağlantısı"></div>
+            <div class="col-md-3 mb-3"><button class="btn btn-primary w-100" onclick="loadDatasetFromURL('tr')">URL'den Al</button></div>
+          </div>
+          <div id="datasetStatus-tr" class="alert alert-info">Henüz ortak çalışma verisi yüklenmedi.</div>
+          <div id="datasetProfile-tr"></div>
+          <div id="datasetPreview-tr" class="table-responsive" style="max-height:420px;overflow:auto;"></div>
+        </div>
+
+        <div class="subsection">
+          <h3>2. Kaggle ve Açık Veri Bağlayıcıları</h3>
+          <p><strong>Kaggle:</strong> En güvenli yöntem, Kaggle’dan indirilen ZIP paketini yukarıdaki dosya alanına bırakmaktır. Kurumsal veya yerel bir API gateway kullanılıyorsa aşağıdaki bağlayıcı ZIP paketini doğrudan alabilir. Anahtarlar yalnız işlem belleğinde kullanılır ve kaydedilmez.</p>
+          <div class="row">
+            <div class="col-md-4 mb-3"><input id="kaggleSlug-tr" class="form-control" value="zynicide/wine-reviews" placeholder="sahip/veri-seti"></div>
+            <div class="col-md-4 mb-3"><input id="kaggleGateway-tr" class="form-control" placeholder="İsteğe bağlı CORS/API gateway URL'si"></div>
+            <div class="col-md-2 mb-3"><input id="kaggleUser-tr" class="form-control" autocomplete="off" placeholder="Kaggle kullanıcı"></div>
+            <div class="col-md-2 mb-3"><input id="kaggleKey-tr" class="form-control" type="password" autocomplete="off" placeholder="API anahtarı"></div>
+          </div>
+          <button class="btn btn-primary mb-3" onclick="loadKaggleDataset('tr')">Kaggle Paketini Al</button>
+          <button class="btn btn-outline-primary mb-3" onclick="openKaggleDataset('tr')">Kaggle Sayfasını Aç</button>
+          <div id="kaggleStatus-tr"></div>
+          <hr>
+          <p><strong>Hugging Face Datasets:</strong> Dataset Viewer API üzerinden ilk satırları çalışma alanına aktarır.</p>
+          <div class="row">
+            <div class="col-md-4 mb-3"><input id="hfDataset-tr" class="form-control" value="lhoestq/demo1" placeholder="dataset/depo"></div>
+            <div class="col-md-3 mb-3"><input id="hfConfig-tr" class="form-control" value="default" placeholder="config"></div>
+            <div class="col-md-3 mb-3"><input id="hfSplit-tr" class="form-control" value="train" placeholder="split"></div>
+            <div class="col-md-2 mb-3"><input id="hfLimit-tr" class="form-control" type="number" min="1" max="100" value="50"></div>
+          </div>
+          <button class="btn btn-primary mb-3" onclick="loadHuggingFaceDataset('tr')">Hugging Face Verisini Al</button>
+          <div id="hfStatus-tr"></div>
+        </div>
+
+        <div class="subsection">
+          <h3>3. DuckDB-WASM SQL Laboratuvarı</h3>
+          <p>Ortak çalışma verisini tarayıcı içindeki DuckDB tablosuna aktarır. SQL sorguları veriyi sunucuya göndermeden çalışır.</p>
+          <textarea id="duckQuery-tr" class="form-control mb-3" rows="5" style="font-family:monospace;">SELECT * FROM dh_data LIMIT 20;</textarea>
+          <button class="btn btn-primary mb-3" onclick="runDuckDBQuery('tr')">SQL Çalıştır</button>
+          <button class="btn btn-outline-primary mb-3" onclick="useDuckDBResult('tr')">Sorgu Sonucunu Çalışma Verisi Yap</button>
+          <div id="duckStatus-tr"></div>
+          <div id="duckResult-tr" class="table-responsive" style="max-height:420px;overflow:auto;"></div>
+        </div>
+
+        <div class="subsection">
+          <h3>4. Pyodide: Tarayıcıda Python, pandas ve scikit-learn</h3>
+          <p>Python çalışma zamanı ilk kullanımda yüklenir. Ortak veri <code>df</code> adlı pandas DataFrame olarak hazır edilir. Kod yalnız bu sayfadaki WebAssembly çalışma alanında çalışır.</p>
+          <textarea id="pythonCode-tr" class="form-control mb-3" rows="11" style="font-family:monospace;">print("Satır / sütun:", df.shape)
+print("\nİlk kayıtlar:")
+print(df.head().to_string())
+print("\nVeri türleri:")
+print(df.dtypes.to_string())</textarea>
+          <button class="btn btn-primary mb-3" onclick="runPyodideCode('tr')">Python Kodunu Çalıştır</button>
+          <button class="btn btn-outline-primary mb-3" onclick="loadPythonExample('profile','tr')">Profil Örneği</button>
+          <button class="btn btn-outline-primary mb-3" onclick="loadPythonExample('plot','tr')">Matplotlib Örneği</button>
+          <div id="pyStatus-tr"></div>
+          <pre id="pythonOutput-tr" class="p-3 bg-light border rounded" style="white-space:pre-wrap;max-height:420px;overflow:auto;"></pre>
+          <div id="pythonPlot-tr"></div>
+        </div>
+
+        <div class="subsection">
+          <h3>5. TensorFlow.js Model Eğitim Laboratuvarı</h3>
+          <p>Ortak verideki iki sayısal sütunu seçerek tarayıcı içinde basit bir regresyon modeli eğitir; eğitim kaybını ve tahminleri gerçek veriden üretir.</p>
+          <div class="row">
+            <div class="col-md-4 mb-3"><label for="tfX-tr" class="form-label">Girdi sütunu (X)</label><select id="tfX-tr" class="form-control"></select></div>
+            <div class="col-md-4 mb-3"><label for="tfY-tr" class="form-label">Hedef sütunu (Y)</label><select id="tfY-tr" class="form-control"></select></div>
+            <div class="col-md-4 mb-3"><label for="tfEpochs-tr" class="form-label">Epoch</label><input id="tfEpochs-tr" class="form-control" type="number" min="10" max="500" value="80"></div>
+          </div>
+          <button class="btn btn-primary mb-3" onclick="trainTensorFlowModel('tr')">Modeli Eğit</button>
+          <div id="tfStatus-tr"></div>
+          <div id="tfLoss-tr"></div>
+          <div id="tfPred-tr"></div>
+        </div>
+
+        <div class="subsection">
+          <h3>6. Transformers.js Metin Modeli</h3>
+          <p>Önceden eğitilmiş bir Transformers modelini ilk kullanımda indirir ve çıkarımı tarayıcıda gerçekleştirir. Varsayılan model İngilizce duygu sınıflandırması içindir; model alanı değiştirilebilir.</p>
+          <div class="mb-3"><label for="transformerModel-tr" class="form-label">Hugging Face model kimliği:</label><input id="transformerModel-tr" class="form-control" value="Xenova/distilbert-base-uncased-finetuned-sst-2-english"></div>
+          <textarea id="transformerText-tr" class="form-control mb-3" rows="4">Digital archives make cultural heritage more accessible and research more transparent.</textarea>
+          <button class="btn btn-primary mb-3" onclick="runTransformerSentiment('tr')">Modeli Yükle ve Analiz Et</button>
+          <div id="transformerStatus-tr"></div>
+          <pre id="transformerOutput-tr" class="p-3 bg-light border rounded" style="white-space:pre-wrap;"></pre>
+        </div>
+
+        <div class="subsection">
+          <h3>7. OpenCV.js Görsel İşleme</h3>
+          <p>Yerel görseli tarayıcı içinde gri tona dönüştürür, eşikler veya kenarlarını çıkarır. Görsel sunucuya gönderilmez.</p>
+          <div class="row">
+            <div class="col-md-6 mb-3"><input id="opencvFile-tr" class="form-control" type="file" accept="image/*" onchange="loadOpenCVImage(event,'tr')"></div>
+            <div class="col-md-3 mb-3"><select id="opencvMode-tr" class="form-control"><option value="gray">Gri ton</option><option value="threshold">Eşikleme</option><option value="canny">Kenar bulma</option></select></div>
+            <div class="col-md-3 mb-3"><button class="btn btn-primary w-100" onclick="processOpenCV('tr')">Görseli İşle</button></div>
+          </div>
+          <div id="opencvStatus-tr"></div>
+          <div class="row"><div class="col-md-6"><h4>Kaynak</h4><canvas id="opencvSource-tr" class="img-fluid border"></canvas></div><div class="col-md-6"><h4>Çıktı</h4><canvas id="opencvOutput-tr" class="img-fluid border"></canvas></div></div>
+          <button class="btn btn-outline-primary mt-3" onclick="downloadCanvas('opencvOutput-tr','opencv-sonucu.png')">PNG İndir</button>
+        </div>
+
+        <div class="subsection">
+          <h3>8. Cytoscape.js Ağ Analizi</h3>
+          <p>Kaynak–hedef sütunlarından gerçek bir ilişki ağı üretir. Mektuplaşma ağı örnek verisiyle doğrudan denenebilir.</p>
+          <div class="row">
+            <div class="col-md-4 mb-3"><label class="form-label">Kaynak</label><select id="netSource-tr" class="form-control"></select></div>
+            <div class="col-md-4 mb-3"><label class="form-label">Hedef</label><select id="netTarget-tr" class="form-control"></select></div>
+            <div class="col-md-4 mb-3"><label class="form-label">Ağırlık</label><select id="netWeight-tr" class="form-control"></select></div>
+          </div>
+          <button class="btn btn-primary mb-3" onclick="buildCytoscapeNetwork('tr')">Ağı Oluştur</button>
+          <button class="btn btn-outline-primary mb-3" onclick="downloadNetworkPNG('tr')">PNG İndir</button>
+          <div id="networkStatus-tr"></div>
+          <div id="cyNetwork-tr" class="border rounded" style="height:500px;background:#fafafa;"></div>
+        </div>
+
+        <div class="subsection">
+          <h3>9. Leaflet Tarihsel Harita</h3>
+          <p>Enlem ve boylam sütunlarını kullanarak olayları veya kültürel miras nesnelerini etkileşimli haritada gösterir.</p>
+          <div class="row">
+            <div class="col-md-4 mb-3"><label class="form-label">Enlem</label><select id="mapLat-tr" class="form-control"></select></div>
+            <div class="col-md-4 mb-3"><label class="form-label">Boylam</label><select id="mapLon-tr" class="form-control"></select></div>
+            <div class="col-md-4 mb-3"><label class="form-label">Etiket</label><select id="mapLabel-tr" class="form-control"></select></div>
+          </div>
+          <button class="btn btn-primary mb-3" onclick="buildLeafletMap('tr')">Haritayı Oluştur</button>
+          <div id="mapStatus-tr"></div>
+          <div id="leafletMap-tr" class="border rounded" style="height:500px;"></div>
+        </div>
+
+        <div class="subsection">
+          <h3>10. Çalışma Ortamı ve Framework Tanılaması</h3>
+          <p>Tarayıcının WebAssembly, Web Worker, WebGPU, IndexedDB, Canvas ve dosya API desteğini kontrol eder. Büyük modellerin ilk yüklemesi internet bağlantısı ve cihaz belleğine bağlıdır.</p>
+          <button class="btn btn-primary mb-3" onclick="runFrameworkDiagnostics('tr')">Sistemi Denetle</button>
+          <div id="frameworkDiagnostics-tr"></div>
+          <p class="mt-3"><strong>Resmî belgeler:</strong> <a href="https://www.kaggle.com/docs/api" target="_blank" rel="noopener">Kaggle API</a> · <a href="https://pyodide.org/" target="_blank" rel="noopener">Pyodide</a> · <a href="https://duckdb.org/docs/current/clients/wasm/overview.html" target="_blank" rel="noopener">DuckDB-WASM</a> · <a href="https://huggingface.co/docs/transformers.js/" target="_blank" rel="noopener">Transformers.js</a> · <a href="https://www.tensorflow.org/js" target="_blank" rel="noopener">TensorFlow.js</a></p>
+        </div>
+      </section>
+
     </div>
     <!-- End of Türkçe Container -->
   </div>
@@ -1221,6 +1393,7 @@ Fatma Yılmaz, İstanbul, 2023</textarea>
             <li class="nav-item"><a class="nav-link" href="#kaynaklar-en" tabindex="0">Sources</a></li>
             <li class="nav-item"><a class="nav-link" href="#atolye-en" tabindex="0">Workshops</a></li>
             <li class="nav-item"><a class="nav-link" href="#simulations" tabindex="0">Simulations</a></li>
+            <li class="nav-item"><a class="nav-link" href="#framework-lab-en" tabindex="0">Data & Frameworks</a></li>
           </ul>
         </div>
       </div>
@@ -1899,6 +2072,68 @@ A second paragraph becomes a separate text unit.</textarea></div>
         </div>
 
       </section>
+
+      <!-- In-Browser Data and Framework Laboratory -->
+      <section id="framework-lab-en" data-aos="fade-up">
+        <h2>In-Browser Data and Framework Laboratory</h2>
+        <p>
+          This section connects the portal's laboratories to one shared working dataset. Data is processed in the browser whenever possible; local files are not uploaded to a server. External data and model services are loaded only after the user starts the relevant operation.
+        </p>
+
+        <div class="subsection">
+          <h3>1. Unified Data Workspace</h3>
+          <p>Load CSV, JSON, TXT, XML/TEI, ZIP, or workspace JSON files. ZIP packages downloaded from Kaggle can be opened directly.</p>
+          <div class="row">
+            <div class="col-md-7 mb-3"><label for="datasetFile-en" class="form-label">Local file or Kaggle ZIP package:</label><input id="datasetFile-en" class="form-control" type="file" accept=".csv,.json,.txt,.xml,.tei,.zip,.parquet,.dhworkspace.json" onchange="handleDatasetFile(event,'en')"></div>
+            <div class="col-md-5 mb-3"><label class="form-label">Ready-to-use sample:</label><select id="sampleDataset-en" class="form-control"><option value="newspapers">Historical newspaper corpus</option><option value="network">Correspondence network</option><option value="geo">Historical places and events</option><option value="metadata">Cultural heritage metadata</option><option value="regression">Numeric training data</option></select></div>
+          </div>
+          <div class="mb-3">
+            <button class="btn btn-primary" onclick="loadSampleDataset('en')">Load Sample</button>
+            <button class="btn btn-outline-primary" onclick="exportCurrentDataset('csv','en')">Download CSV</button>
+            <button class="btn btn-outline-primary" onclick="exportCurrentDataset('json','en')">Download JSON</button>
+            <button class="btn btn-outline-primary" onclick="downloadWorkspace('en')">Download Workspace</button>
+            <button class="btn btn-outline-primary" onclick="saveWorkspaceIndexedDB('en')">Save in Browser</button>
+            <button class="btn btn-outline-primary" onclick="restoreWorkspaceIndexedDB('en')">Restore Saved Work</button>
+          </div>
+          <div id="archivePickerWrap-en" class="mb-3" style="display:none;"><label for="archiveEntry-en" class="form-label">File to open from ZIP:</label><div class="input-group"><select id="archiveEntry-en" class="form-control"></select><button class="btn btn-primary" onclick="loadSelectedArchiveEntry('en')">Open Selected</button></div></div>
+          <div class="row"><div class="col-md-9 mb-3"><input id="datasetURL-en" class="form-control" placeholder="CORS-enabled CSV/JSON/TXT URL or GitHub raw URL"></div><div class="col-md-3 mb-3"><button class="btn btn-primary w-100" onclick="loadDatasetFromURL('en')">Load URL</button></div></div>
+          <div id="datasetStatus-en" class="alert alert-info">No shared working dataset has been loaded.</div>
+          <div id="datasetProfile-en"></div>
+          <div id="datasetPreview-en" class="table-responsive" style="max-height:420px;overflow:auto;"></div>
+        </div>
+
+        <div class="subsection">
+          <h3>2. Kaggle and Open-Data Connectors</h3>
+          <p><strong>Kaggle:</strong> The safest workflow is to download a ZIP from Kaggle and open it above. If an institutional or local API gateway is available, the connector can fetch the ZIP directly. Credentials are used only in memory and are not stored.</p>
+          <div class="row"><div class="col-md-4 mb-3"><input id="kaggleSlug-en" class="form-control" value="zynicide/wine-reviews" placeholder="owner/dataset"></div><div class="col-md-4 mb-3"><input id="kaggleGateway-en" class="form-control" placeholder="Optional CORS/API gateway URL"></div><div class="col-md-2 mb-3"><input id="kaggleUser-en" class="form-control" autocomplete="off" placeholder="Kaggle user"></div><div class="col-md-2 mb-3"><input id="kaggleKey-en" class="form-control" type="password" autocomplete="off" placeholder="API key"></div></div>
+          <button class="btn btn-primary mb-3" onclick="loadKaggleDataset('en')">Fetch Kaggle Package</button><button class="btn btn-outline-primary mb-3" onclick="openKaggleDataset('en')">Open Kaggle Page</button><div id="kaggleStatus-en"></div>
+          <hr>
+          <p><strong>Hugging Face Datasets:</strong> Imports initial rows through the Dataset Viewer API.</p>
+          <div class="row"><div class="col-md-4 mb-3"><input id="hfDataset-en" class="form-control" value="lhoestq/demo1" placeholder="dataset/repository"></div><div class="col-md-3 mb-3"><input id="hfConfig-en" class="form-control" value="default" placeholder="config"></div><div class="col-md-3 mb-3"><input id="hfSplit-en" class="form-control" value="train" placeholder="split"></div><div class="col-md-2 mb-3"><input id="hfLimit-en" class="form-control" type="number" min="1" max="100" value="50"></div></div>
+          <button class="btn btn-primary mb-3" onclick="loadHuggingFaceDataset('en')">Fetch Hugging Face Data</button><div id="hfStatus-en"></div>
+        </div>
+
+        <div class="subsection"><h3>3. DuckDB-WASM SQL Laboratory</h3><p>Registers the shared dataset as a DuckDB table and runs SQL locally in the browser.</p><textarea id="duckQuery-en" class="form-control mb-3" rows="5" style="font-family:monospace;">SELECT * FROM dh_data LIMIT 20;</textarea><button class="btn btn-primary mb-3" onclick="runDuckDBQuery('en')">Run SQL</button><button class="btn btn-outline-primary mb-3" onclick="useDuckDBResult('en')">Use Query Result as Dataset</button><div id="duckStatus-en"></div><div id="duckResult-en" class="table-responsive" style="max-height:420px;overflow:auto;"></div></div>
+
+        <div class="subsection"><h3>4. Pyodide: Python, pandas, and scikit-learn in the Browser</h3><p>The Python runtime loads on first use. The shared dataset is available as a pandas DataFrame named <code>df</code>.</p><textarea id="pythonCode-en" class="form-control mb-3" rows="11" style="font-family:monospace;">print("Rows / columns:", df.shape)
+print("\nFirst records:")
+print(df.head().to_string())
+print("\nData types:")
+print(df.dtypes.to_string())</textarea><button class="btn btn-primary mb-3" onclick="runPyodideCode('en')">Run Python</button><button class="btn btn-outline-primary mb-3" onclick="loadPythonExample('profile','en')">Profile Example</button><button class="btn btn-outline-primary mb-3" onclick="loadPythonExample('plot','en')">Matplotlib Example</button><div id="pyStatus-en"></div><pre id="pythonOutput-en" class="p-3 bg-light border rounded" style="white-space:pre-wrap;max-height:420px;overflow:auto;"></pre><div id="pythonPlot-en"></div></div>
+
+        <div class="subsection"><h3>5. TensorFlow.js Model Training</h3><p>Select two numeric columns and train a simple regression model in the browser. Loss and predictions are generated from the active data.</p><div class="row"><div class="col-md-4 mb-3"><label class="form-label">Input column (X)</label><select id="tfX-en" class="form-control"></select></div><div class="col-md-4 mb-3"><label class="form-label">Target column (Y)</label><select id="tfY-en" class="form-control"></select></div><div class="col-md-4 mb-3"><label class="form-label">Epochs</label><input id="tfEpochs-en" class="form-control" type="number" min="10" max="500" value="80"></div></div><button class="btn btn-primary mb-3" onclick="trainTensorFlowModel('en')">Train Model</button><div id="tfStatus-en"></div><div id="tfLoss-en"></div><div id="tfPred-en"></div></div>
+
+        <div class="subsection"><h3>6. Transformers.js Text Model</h3><p>Downloads a pretrained Transformers model on first use and runs inference in the browser. The default model is for English sentiment classification.</p><div class="mb-3"><label class="form-label">Hugging Face model ID:</label><input id="transformerModel-en" class="form-control" value="Xenova/distilbert-base-uncased-finetuned-sst-2-english"></div><textarea id="transformerText-en" class="form-control mb-3" rows="4">Digital archives make cultural heritage more accessible and research more transparent.</textarea><button class="btn btn-primary mb-3" onclick="runTransformerSentiment('en')">Load Model and Analyse</button><div id="transformerStatus-en"></div><pre id="transformerOutput-en" class="p-3 bg-light border rounded" style="white-space:pre-wrap;"></pre></div>
+
+        <div class="subsection"><h3>7. OpenCV.js Image Processing</h3><p>Converts a local image to grayscale, thresholds it, or detects edges entirely in the browser.</p><div class="row"><div class="col-md-6 mb-3"><input id="opencvFile-en" class="form-control" type="file" accept="image/*" onchange="loadOpenCVImage(event,'en')"></div><div class="col-md-3 mb-3"><select id="opencvMode-en" class="form-control"><option value="gray">Grayscale</option><option value="threshold">Threshold</option><option value="canny">Edge detection</option></select></div><div class="col-md-3 mb-3"><button class="btn btn-primary w-100" onclick="processOpenCV('en')">Process Image</button></div></div><div id="opencvStatus-en"></div><div class="row"><div class="col-md-6"><h4>Source</h4><canvas id="opencvSource-en" class="img-fluid border"></canvas></div><div class="col-md-6"><h4>Output</h4><canvas id="opencvOutput-en" class="img-fluid border"></canvas></div></div><button class="btn btn-outline-primary mt-3" onclick="downloadCanvas('opencvOutput-en','opencv-result.png')">Download PNG</button></div>
+
+        <div class="subsection"><h3>8. Cytoscape.js Network Analysis</h3><p>Builds a real network from source and target columns. The correspondence sample is ready to use.</p><div class="row"><div class="col-md-4 mb-3"><label class="form-label">Source</label><select id="netSource-en" class="form-control"></select></div><div class="col-md-4 mb-3"><label class="form-label">Target</label><select id="netTarget-en" class="form-control"></select></div><div class="col-md-4 mb-3"><label class="form-label">Weight</label><select id="netWeight-en" class="form-control"></select></div></div><button class="btn btn-primary mb-3" onclick="buildCytoscapeNetwork('en')">Build Network</button><button class="btn btn-outline-primary mb-3" onclick="downloadNetworkPNG('en')">Download PNG</button><div id="networkStatus-en"></div><div id="cyNetwork-en" class="border rounded" style="height:500px;background:#fafafa;"></div></div>
+
+        <div class="subsection"><h3>9. Leaflet Historical Map</h3><p>Maps events or heritage objects using latitude and longitude columns.</p><div class="row"><div class="col-md-4 mb-3"><label class="form-label">Latitude</label><select id="mapLat-en" class="form-control"></select></div><div class="col-md-4 mb-3"><label class="form-label">Longitude</label><select id="mapLon-en" class="form-control"></select></div><div class="col-md-4 mb-3"><label class="form-label">Label</label><select id="mapLabel-en" class="form-control"></select></div></div><button class="btn btn-primary mb-3" onclick="buildLeafletMap('en')">Build Map</button><div id="mapStatus-en"></div><div id="leafletMap-en" class="border rounded" style="height:500px;"></div></div>
+
+        <div class="subsection"><h3>10. Runtime and Framework Diagnostics</h3><p>Checks WebAssembly, Web Workers, WebGPU, IndexedDB, Canvas, and file API support. Initial downloads of large models depend on connectivity and device memory.</p><button class="btn btn-primary mb-3" onclick="runFrameworkDiagnostics('en')">Check System</button><div id="frameworkDiagnostics-en"></div><p class="mt-3"><strong>Official documentation:</strong> <a href="https://www.kaggle.com/docs/api" target="_blank" rel="noopener">Kaggle API</a> · <a href="https://pyodide.org/" target="_blank" rel="noopener">Pyodide</a> · <a href="https://duckdb.org/docs/current/clients/wasm/overview.html" target="_blank" rel="noopener">DuckDB-WASM</a> · <a href="https://huggingface.co/docs/transformers.js/" target="_blank" rel="noopener">Transformers.js</a> · <a href="https://www.tensorflow.org/js" target="_blank" rel="noopener">TensorFlow.js</a></p></div>
+      </section>
+
 
         <!-- End of English Container -->
   </div>
@@ -3306,6 +3541,435 @@ A second paragraph becomes a separate text unit.</textarea></div>
     } else {
       drawInitialDHCharts();
     }
+
+  </script>
+  <script id="dh-framework-runtime">
+/* ================================================================
+   DIGITAL HUMANITIES BROWSER RUNTIME EXTENSION
+   Preserves the existing portal and adds shared data/framework tools.
+   ================================================================ */
+const DHFrameworkRuntime = {
+  dataset: null,
+  version: 0,
+  archive: null,
+  archiveEntries: [],
+  lastDuckRows: [],
+  duck: null,
+  duckConnection: null,
+  duckSyncedVersion: -1,
+  pyodide: null,
+  pySyncedVersion: -1,
+  transformersModule: null,
+  transformerPipelines: new Map(),
+  cytoscape: {},
+  maps: {},
+  pythonPlotURL: null
+};
+
+function fT(lang, tr, en) { return lang === 'tr' ? tr : en; }
+function fEl(id) { return document.getElementById(id); }
+function fEsc(value) {
+  return String(value == null ? '' : value).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+}
+function fStatus(id, message, type) {
+  const el = fEl(id); if (!el) return;
+  el.className = 'alert alert-' + (type || 'info');
+  el.innerHTML = message;
+}
+function fFriendlyError(error) {
+  return fEsc(error && error.message ? error.message : String(error));
+}
+function fDownloadBlob(filename, blob) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+function fDownloadText(filename, text, type) {
+  fDownloadBlob(filename, new Blob([text], {type: type || 'text/plain;charset=utf-8'}));
+}
+function fSafeFilename(name) {
+  return String(name || 'dataset').replace(/[^a-zA-Z0-9çğıöşüÇĞİÖŞÜ._-]+/g, '_').replace(/^_+|_+$/g, '') || 'dataset';
+}
+function fLoadScript(src, id) {
+  return new Promise((resolve, reject) => {
+    if (id && document.getElementById(id)) {
+      const old = document.getElementById(id);
+      if (old.dataset.loaded === 'true') return resolve(old);
+      old.addEventListener('load', () => resolve(old), {once:true});
+      old.addEventListener('error', () => reject(new Error('Script yüklenemedi: ' + src)), {once:true});
+      return;
+    }
+    const script = document.createElement('script'); script.src = src; script.async = true; if (id) script.id = id;
+    script.onload = () => { script.dataset.loaded = 'true'; resolve(script); };
+    script.onerror = () => reject(new Error('Script yüklenemedi: ' + src));
+    document.head.appendChild(script);
+  });
+}
+function fLoadCSS(href, id) {
+  if (id && document.getElementById(id)) return;
+  const link = document.createElement('link'); link.rel = 'stylesheet'; link.href = href; if (id) link.id = id; document.head.appendChild(link);
+}
+async function fFetch(url, options, timeoutMs) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs || 60000);
+  try { return await fetch(url, {...(options || {}), signal: controller.signal}); }
+  finally { clearTimeout(timer); }
+}
+
+const DH_SAMPLE_DATASETS = {
+  newspapers: {
+    trName: 'Tarihî Gazete Korpusu', enName: 'Historical Newspaper Corpus',
+    rows: [
+      {id:1, year:1923, newspaper:'Hâkimiyet-i Milliye', city:'Ankara', text:'Yeni devletin eğitim, kültür ve iktisat politikaları kamuoyunda tartışılıyor.', words:12},
+      {id:2, year:1928, newspaper:'Cumhuriyet', city:'İstanbul', text:'Yeni harflerin öğretimi için millet mektepleri ve yayın programları hazırlanıyor.', words:11},
+      {id:3, year:1932, newspaper:'Ulus', city:'Ankara', text:'Halkevleri sanat, tarih, dil ve halk eğitimi çalışmalarını genişletiyor.', words:10},
+      {id:4, year:1935, newspaper:'Akşam', city:'İstanbul', text:'Kütüphaneler ve müzeler kültürel mirasın korunmasında yeni görevler üstleniyor.', words:10},
+      {id:5, year:1940, newspaper:'Tan', city:'İstanbul', text:'Basın, kentleşme ve toplumsal dönüşüm arasındaki ilişkiyi farklı görüşlerle ele alıyor.', words:12}
+    ]
+  },
+  network: {
+    trName:'Mektuplaşma Ağı', enName:'Correspondence Network',
+    rows:[
+      {source:'Halide Edib', target:'Yakup Kadri', year:1922, weight:4, topic:'edebiyat'},
+      {source:'Yakup Kadri', target:'Falih Rıfkı', year:1924, weight:7, topic:'basın'},
+      {source:'Halide Edib', target:'Adnan Adıvar', year:1925, weight:6, topic:'eğitim'},
+      {source:'Adnan Adıvar', target:'Fuat Köprülü', year:1927, weight:3, topic:'tarih'},
+      {source:'Fuat Köprülü', target:'Yakup Kadri', year:1929, weight:5, topic:'kültür'},
+      {source:'Falih Rıfkı', target:'Halide Edib', year:1930, weight:2, topic:'seyahat'}
+    ]
+  },
+  geo: {
+    trName:'Tarihsel Yer ve Olaylar', enName:'Historical Places and Events',
+    rows:[
+      {place:'Ankara', latitude:39.9334, longitude:32.8597, year:1923, event:'Başkent ilanı', category:'siyaset'},
+      {place:'İstanbul', latitude:41.0082, longitude:28.9784, year:1928, event:'Harf Devrimi yayınları', category:'yayın'},
+      {place:'İzmir', latitude:38.4237, longitude:27.1428, year:1923, event:'İktisat Kongresi', category:'iktisat'},
+      {place:'Sivas', latitude:39.7505, longitude:37.0150, year:1919, event:'Sivas Kongresi', category:'siyaset'},
+      {place:'Zonguldak', latitude:41.4564, longitude:31.7987, year:1937, event:'Sanayi ve işçi basını', category:'emek'}
+    ]
+  },
+  metadata: {
+    trName:'Kültürel Miras Metadata', enName:'Cultural Heritage Metadata',
+    rows:[
+      {identifier:'MK-0001', title:'Ankara Panoraması', creator:'Fotoğrafhane', date:'1934', type:'Fotoğraf', place:'Ankara', rights:'Kamu malı'},
+      {identifier:'MK-0002', title:'El Yazması Şiir Mecmuası', creator:'Bilinmiyor', date:'18. yüzyıl', type:'Elyazması', place:'İstanbul', rights:'Erişim kontrollü'},
+      {identifier:'MK-0003', title:'Halk Müziği Alan Kaydı', creator:'Derleme Heyeti', date:'1952', type:'Ses', place:'Sivas', rights:'Araştırma kullanımı'},
+      {identifier:'MK-0004', title:'Maden İşçileri Albümü', creator:'Yerel Basın', date:'1937', type:'Fotoğraf', place:'Zonguldak', rights:'Kaynak gösteriniz'}
+    ]
+  },
+  regression: {
+    trName:'Sayısal Eğitim Verisi', enName:'Numeric Training Data',
+    rows:Array.from({length:30},(_,i)=>({year:1995+i, digitized_items:Math.round(120+38*i+15*Math.sin(i)), users:Math.round(800+155*i+80*Math.cos(i/2)), projects:Math.round(2+i*0.7)}))
+  }
+};
+
+function loadSampleDataset(lang) {
+  const key = fEl('sampleDataset-' + lang).value;
+  const sample = DH_SAMPLE_DATASETS[key];
+  fSetDataset(sample.rows.map(row => ({...row})), fT(lang, sample.trName, sample.enName), 'sample', lang);
+}
+
+function fInferColumns(rows) {
+  const set = new Set(); rows.slice(0,500).forEach(row => Object.keys(row || {}).forEach(k => set.add(k))); return Array.from(set);
+}
+function fScalar(value) {
+  if (value == null) return '';
+  if (typeof value === 'object') { try { return JSON.stringify(value); } catch (_) { return String(value); } }
+  return value;
+}
+function fInferType(values) {
+  const present = values.filter(v => v !== '' && v != null);
+  if (!present.length) return 'empty';
+  const numeric = present.filter(v => Number.isFinite(Number(String(v).replace(',','.')))).length;
+  if (numeric / present.length >= .85) return 'number';
+  const dates = present.filter(v => !Number.isNaN(Date.parse(v))).length;
+  if (dates / present.length >= .85) return 'date';
+  const bools = present.filter(v => ['true','false','yes','no','evet','hayır','0','1'].includes(String(v).toLowerCase())).length;
+  if (bools / present.length >= .85) return 'boolean';
+  return 'text';
+}
+function fNumericColumns(rows, columns) {
+  return columns.filter(c => {
+    const vals = rows.slice(0,500).map(r => r[c]).filter(v => v !== '' && v != null);
+    return vals.length >= 3 && vals.filter(v => Number.isFinite(Number(String(v).replace(',','.')))).length / vals.length >= .8;
+  });
+}
+function fSetDataset(rows, name, source, lang) {
+  if (!Array.isArray(rows)) rows = [];
+  const cleaned = rows.map((row, i) => {
+    if (row && typeof row === 'object' && !Array.isArray(row)) return Object.fromEntries(Object.entries(row).map(([k,v]) => [String(k), fScalar(v)]));
+    return {index:i+1, value:fScalar(row)};
+  });
+  DHFrameworkRuntime.dataset = {name:name || 'dataset', source:source || 'local', rows:cleaned, columns:fInferColumns(cleaned), loadedAt:new Date().toISOString()};
+  DHFrameworkRuntime.version += 1; DHFrameworkRuntime.duckSyncedVersion = -1; DHFrameworkRuntime.pySyncedVersion = -1;
+  fRenderDatasetWorkspace();
+  if (lang) fStatus('datasetStatus-' + lang, fT(lang, 'Veri çalışma alanına aktarıldı.', 'Dataset loaded into the workspace.'), 'success');
+}
+function fRenderDatasetWorkspace() {
+  const ds = DHFrameworkRuntime.dataset;
+  ['tr','en'].forEach(lang => {
+    const status = fEl('datasetStatus-' + lang), profile = fEl('datasetProfile-' + lang), preview = fEl('datasetPreview-' + lang);
+    if (!status || !profile || !preview) return;
+    if (!ds) { status.className='alert alert-info'; status.textContent=fT(lang,'Henüz ortak çalışma verisi yüklenmedi.','No shared working dataset has been loaded.'); profile.innerHTML=''; preview.innerHTML=''; return; }
+    status.className='alert alert-success';
+    status.innerHTML='<strong>' + fEsc(ds.name) + '</strong> · ' + ds.rows.length + ' ' + fT(lang,'satır','rows') + ' · ' + ds.columns.length + ' ' + fT(lang,'sütun','columns') + ' · ' + fEsc(ds.source);
+    const schemaRows = ds.columns.map(c => {
+      const vals = ds.rows.slice(0,1000).map(r => r[c]); const present=vals.filter(v=>v!==''&&v!=null); const type=fInferType(vals); const unique=new Set(present.map(v=>String(v))).size; const missing=ds.rows.length-present.length;
+      let summary=''; if(type==='number' && present.length){ const nums=present.map(v=>Number(String(v).replace(',','.'))).filter(Number.isFinite); const mean=nums.reduce((a,b)=>a+b,0)/nums.length; summary='min '+Math.min(...nums).toFixed(2)+' · max '+Math.max(...nums).toFixed(2)+' · μ '+mean.toFixed(2); }
+      return '<tr><td><strong>'+fEsc(c)+'</strong></td><td>'+type+'</td><td>'+missing+'</td><td>'+unique+'</td><td>'+fEsc(summary)+'</td></tr>';
+    }).join('');
+    profile.innerHTML='<h4>'+fT(lang,'Veri Profili','Data Profile')+'</h4><div class="table-responsive"><table class="table table-sm table-bordered"><thead><tr><th>'+fT(lang,'Alan','Field')+'</th><th>'+fT(lang,'Tür','Type')+'</th><th>'+fT(lang,'Eksik','Missing')+'</th><th>'+fT(lang,'Benzersiz','Unique')+'</th><th>'+fT(lang,'Özet','Summary')+'</th></tr></thead><tbody>'+schemaRows+'</tbody></table></div>';
+    preview.innerHTML=fRenderRowsTable(ds.rows.slice(0,50), ds.columns.slice(0,30), lang);
+  });
+  fUpdateColumnSelectors();
+}
+function fRenderRowsTable(rows, columns, lang) {
+  if (!rows.length) return '<div class="alert alert-warning">'+fT(lang,'Gösterilecek satır yok.','No rows to display.')+'</div>';
+  const head=columns.map(c=>'<th>'+fEsc(c)+'</th>').join('');
+  const body=rows.map(row=>'<tr>'+columns.map(c=>'<td style="max-width:320px;white-space:normal;">'+fEsc(fScalar(row[c]))+'</td>').join('')+'</tr>').join('');
+  return '<table class="table table-sm table-striped table-bordered"><thead class="table-light" style="position:sticky;top:0;"><tr>'+head+'</tr></thead><tbody>'+body+'</tbody></table>';
+}
+function fFillSelect(id, columns, preferred, allowNone) {
+  const sel=fEl(id); if(!sel) return; const old=sel.value; let html=allowNone?'<option value="">—</option>':'';
+  html += columns.map(c=>'<option value="'+fEsc(c)+'">'+fEsc(c)+'</option>').join(''); sel.innerHTML=html;
+  const match=[old,...(preferred||[])].find(x=>columns.includes(x)); if(match) sel.value=match;
+}
+function fUpdateColumnSelectors() {
+  const ds=DHFrameworkRuntime.dataset; if(!ds) return; const cols=ds.columns, numeric=fNumericColumns(ds.rows,cols);
+  ['tr','en'].forEach(lang=>{
+    fFillSelect('tfX-'+lang,numeric,['year','x','digitized_items']); fFillSelect('tfY-'+lang,numeric,['users','y','projects']);
+    fFillSelect('netSource-'+lang,cols,['source','from','sender','creator']); fFillSelect('netTarget-'+lang,cols,['target','to','receiver','recipient']); fFillSelect('netWeight-'+lang,cols,['weight','count','value'],true);
+    fFillSelect('mapLat-'+lang,cols,['latitude','lat','enlem']); fFillSelect('mapLon-'+lang,cols,['longitude','lon','lng','boylam']); fFillSelect('mapLabel-'+lang,cols,['place','label','title','event','name'],true);
+  });
+}
+
+async function fEnsurePapa() {
+  if (window.Papa) return window.Papa;
+  await fLoadScript('https://cdn.jsdelivr.net/npm/papaparse@5.5.3/papaparse.min.js','dh-papaparse'); return window.Papa;
+}
+async function fEnsureJSZip() {
+  if (window.JSZip) return window.JSZip;
+  await fLoadScript('https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js','dh-jszip'); return window.JSZip;
+}
+async function fParseTextByName(name, text) {
+  const lower=name.toLowerCase();
+  if(lower.endsWith('.csv') || lower.endsWith('.tsv')){
+    try { const Papa=await fEnsurePapa(); const result=Papa.parse(text,{header:true,skipEmptyLines:true,dynamicTyping:true,delimiter:lower.endsWith('.tsv')?'\t':''}); if(result.errors && result.errors.length && !result.data.length) throw new Error(result.errors[0].message); return result.data; }
+    catch (_) { if(typeof parseCSVSimple==='function') return parseCSVSimple(text); throw _; }
+  }
+  if(lower.endsWith('.json') || lower.endsWith('.dhworkspace.json')){
+    const obj=JSON.parse(text); if(obj && obj.workspaceVersion && Array.isArray(obj.rows)) return obj.rows; if(Array.isArray(obj)) return obj; if(obj && Array.isArray(obj.rows)) return obj.rows; if(obj && Array.isArray(obj.data)) return obj.data; return [obj];
+  }
+  if(lower.endsWith('.xml') || lower.endsWith('.tei')){
+    const doc=new DOMParser().parseFromString(text,'application/xml'); if(doc.querySelector('parsererror')) throw new Error('XML parse error');
+    let nodes=Array.from(doc.querySelectorAll('record,item,row,entry,bibl,person,place'));
+    if(!nodes.length) nodes=Array.from(doc.querySelectorAll('text p,body p')).slice(0,500);
+    if(!nodes.length) return [{xml:text}];
+    return nodes.map((node,i)=>{ const children=Array.from(node.children); if(!children.length) return {index:i+1,text:node.textContent.trim()}; const row={}; children.forEach(ch=>{row[ch.localName]=(row[ch.localName]?row[ch.localName]+' | ':'')+ch.textContent.trim();}); return row; });
+  }
+  return text.split(/\r?\n/).map((line,i)=>({line:i+1,text:line})).filter(r=>r.text.trim());
+}
+async function handleDatasetFile(event, lang) {
+  const file=event.target.files && event.target.files[0]; if(!file) return;
+  try {
+    fStatus('datasetStatus-'+lang,fT(lang,'Dosya okunuyor…','Reading file…'),'info');
+    const lower=file.name.toLowerCase();
+    if(lower.endsWith('.zip')) return await fLoadArchiveBlob(file,file.name,lang);
+    if(lower.endsWith('.parquet')) return await fLoadParquetBlob(file,file.name,lang);
+    const text=await file.text();
+    if(lower.endsWith('.dhworkspace.json')) { const obj=JSON.parse(text); if(!Array.isArray(obj.rows)) throw new Error('Invalid workspace file'); fSetDataset(obj.rows,obj.name||file.name,obj.source||'workspace',lang); return; }
+    const rows=await fParseTextByName(file.name,text); fSetDataset(rows,file.name,'local file',lang);
+  } catch(error){ fStatus('datasetStatus-'+lang,fFriendlyError(error),'danger'); }
+  finally { event.target.value=''; }
+}
+async function fLoadArchiveBlob(blob, name, lang) {
+  const JSZip=await fEnsureJSZip(); const zip=await JSZip.loadAsync(blob); const accepted=/\.(csv|tsv|json|txt|xml|tei|parquet)$/i;
+  const entries=Object.values(zip.files).filter(e=>!e.dir && accepted.test(e.name)); if(!entries.length) throw new Error(fT(lang,'ZIP içinde desteklenen veri dosyası bulunamadı.','No supported data file was found in the ZIP.'));
+  DHFrameworkRuntime.archive=zip; DHFrameworkRuntime.archiveEntries=entries.map(e=>e.name);
+  ['tr','en'].forEach(code=>{ const select=fEl('archiveEntry-'+code), wrap=fEl('archivePickerWrap-'+code); if(select) select.innerHTML=entries.map(e=>'<option value="'+fEsc(e.name)+'">'+fEsc(e.name)+'</option>').join(''); if(wrap) wrap.style.display='block'; });
+  fStatus('datasetStatus-'+lang,fT(lang,'ZIP açıldı. İçindeki veri dosyasını seçin: ','ZIP opened. Select a data file: ')+fEsc(name),'success');
+  if(entries.length===1) await loadSelectedArchiveEntry(lang);
+}
+async function loadSelectedArchiveEntry(lang) {
+  try {
+    if(!DHFrameworkRuntime.archive) throw new Error('Archive not loaded'); const name=fEl('archiveEntry-'+lang).value; const entry=DHFrameworkRuntime.archive.file(name); if(!entry) throw new Error('Archive entry not found');
+    if(name.toLowerCase().endsWith('.parquet')){ const data=await entry.async('uint8array'); return await fLoadParquetBlob(new Blob([data]),name,lang); }
+    const text=await entry.async('text'); const rows=await fParseTextByName(name,text); fSetDataset(rows,name,'ZIP/Kaggle',lang);
+  } catch(error){ fStatus('datasetStatus-'+lang,fFriendlyError(error),'danger'); }
+}
+async function loadDatasetFromURL(lang) {
+  const url=fEl('datasetURL-'+lang).value.trim(); if(!url) return fStatus('datasetStatus-'+lang,fT(lang,'URL girin.','Enter a URL.'),'warning');
+  try { fStatus('datasetStatus-'+lang,fT(lang,'Veri alınıyor…','Fetching data…'),'info'); const res=await fFetch(url,{},60000); if(!res.ok) throw new Error('HTTP '+res.status); const blob=await res.blob(); const name=decodeURIComponent((new URL(url)).pathname.split('/').pop()||'remote.csv'); if(name.toLowerCase().endsWith('.zip')) return await fLoadArchiveBlob(blob,name,lang); if(name.toLowerCase().endsWith('.parquet')) return await fLoadParquetBlob(blob,name,lang); const rows=await fParseTextByName(name,await blob.text()); fSetDataset(rows,name,'URL',lang); }
+  catch(error){ fStatus('datasetStatus-'+lang,fT(lang,'URL alınamadı. Sunucunun CORS izni vermesi gerekir. ','The URL could not be loaded. The server must allow CORS. ')+fFriendlyError(error),'danger'); }
+}
+
+function fRowsToCSV(rows, columns) {
+  const quote=v=>'"'+String(fScalar(v)).replace(/"/g,'""')+'"'; return [columns.map(quote).join(','),...rows.map(r=>columns.map(c=>quote(r[c])).join(','))].join('\n');
+}
+function exportCurrentDataset(format, lang) {
+  const ds=DHFrameworkRuntime.dataset; if(!ds) return fStatus('datasetStatus-'+lang,fT(lang,'Önce veri yükleyin.','Load data first.'),'warning'); const base=fSafeFilename(ds.name.replace(/\.[^.]+$/,''));
+  if(format==='json') fDownloadText(base+'.json',JSON.stringify(ds.rows,null,2),'application/json;charset=utf-8'); else fDownloadText(base+'.csv','\ufeff'+fRowsToCSV(ds.rows,ds.columns),'text/csv;charset=utf-8');
+}
+function downloadWorkspace(lang) {
+  const ds=DHFrameworkRuntime.dataset; if(!ds) return fStatus('datasetStatus-'+lang,fT(lang,'Önce veri yükleyin.','Load data first.'),'warning');
+  const payload={workspaceVersion:1,name:ds.name,source:ds.source,loadedAt:ds.loadedAt,exportedAt:new Date().toISOString(),rows:ds.rows}; fDownloadText(fSafeFilename(ds.name)+'.dhworkspace.json',JSON.stringify(payload,null,2),'application/json;charset=utf-8');
+}
+function fOpenDB() {
+  return new Promise((resolve,reject)=>{ const req=indexedDB.open('digital-humanities-portal',1); req.onupgradeneeded=()=>req.result.createObjectStore('workspace'); req.onsuccess=()=>resolve(req.result); req.onerror=()=>reject(req.error); });
+}
+async function saveWorkspaceIndexedDB(lang) {
+  const ds=DHFrameworkRuntime.dataset; if(!ds) return fStatus('datasetStatus-'+lang,fT(lang,'Önce veri yükleyin.','Load data first.'),'warning');
+  try { const db=await fOpenDB(); await new Promise((resolve,reject)=>{const tx=db.transaction('workspace','readwrite'); tx.objectStore('workspace').put(ds,'current'); tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error);}); db.close(); fStatus('datasetStatus-'+lang,fT(lang,'Çalışma alanı IndexedDB içine kaydedildi.','Workspace saved to IndexedDB.'),'success'); }
+  catch(error){fStatus('datasetStatus-'+lang,fFriendlyError(error),'danger');}
+}
+async function restoreWorkspaceIndexedDB(lang) {
+  try { const db=await fOpenDB(); const ds=await new Promise((resolve,reject)=>{const req=db.transaction('workspace').objectStore('workspace').get('current'); req.onsuccess=()=>resolve(req.result); req.onerror=()=>reject(req.error);}); db.close(); if(!ds) throw new Error(fT(lang,'Kayıtlı çalışma yok.','No saved workspace.')); fSetDataset(ds.rows,ds.name,ds.source||'IndexedDB',lang); }
+  catch(error){fStatus('datasetStatus-'+lang,fFriendlyError(error),'danger');}
+}
+
+function openKaggleDataset(lang) { const slug=fEl('kaggleSlug-'+lang).value.trim().replace(/^\/+|\/+$/g,''); if(slug) window.open('https://www.kaggle.com/datasets/'+encodeURI(slug),'_blank','noopener'); }
+async function loadKaggleDataset(lang) {
+  const slug=fEl('kaggleSlug-'+lang).value.trim().replace(/^\/+|\/+$/g,''); const gateway=fEl('kaggleGateway-'+lang).value.trim(); const user=fEl('kaggleUser-'+lang).value.trim(); const key=fEl('kaggleKey-'+lang).value;
+  if(!/^[^/]+\/[^/]+$/.test(slug)) return fStatus('kaggleStatus-'+lang,fT(lang,'Kaggle kimliği sahip/veri-seti biçiminde olmalı.','Kaggle ID must use owner/dataset format.'),'warning');
+  let url=gateway ? (gateway.includes('{slug}')?gateway.replace('{slug}',encodeURIComponent(slug)):gateway+(gateway.includes('?')?'&':'?')+'dataset='+encodeURIComponent(slug)) : 'https://www.kaggle.com/api/v1/datasets/download/'+slug;
+  const headers={}; if(user&&key) headers.Authorization='Basic '+btoa(unescape(encodeURIComponent(user+':'+key)));
+  try { fStatus('kaggleStatus-'+lang,fT(lang,'Kaggle paketi alınıyor…','Fetching Kaggle package…'),'info'); const res=await fFetch(url,{headers},120000); if(!res.ok) throw new Error('HTTP '+res.status); const blob=await res.blob(); const ctype=res.headers.get('content-type')||''; if(ctype.includes('json')){ const rows=await fParseTextByName(slug+'.json',await blob.text()); fSetDataset(rows,slug,'Kaggle API',lang); } else await fLoadArchiveBlob(blob,slug+'.zip',lang); fStatus('kaggleStatus-'+lang,fT(lang,'Kaggle paketi alındı.','Kaggle package fetched.'),'success'); }
+  catch(error){ fStatus('kaggleStatus-'+lang,fT(lang,'Doğrudan tarayıcı isteği CORS veya kimlik doğrulama nedeniyle engellendi. Kaggle ZIP dosyasını yerel yükleyin ya da bir API gateway belirtin. ','The browser request was blocked by CORS or authentication. Upload the Kaggle ZIP locally or specify an API gateway. ')+fFriendlyError(error),'danger'); }
+  finally { fEl('kaggleKey-'+lang).value=''; }
+}
+async function loadHuggingFaceDataset(lang) {
+  const dataset=fEl('hfDataset-'+lang).value.trim(), config=fEl('hfConfig-'+lang).value.trim(), split=fEl('hfSplit-'+lang).value.trim(), limit=Math.max(1,Math.min(100,Number(fEl('hfLimit-'+lang).value)||50));
+  try { fStatus('hfStatus-'+lang,fT(lang,'Dataset Viewer API sorgulanıyor…','Querying the Dataset Viewer API…'),'info'); const url='https://datasets-server.huggingface.co/rows?dataset='+encodeURIComponent(dataset)+'&config='+encodeURIComponent(config)+'&split='+encodeURIComponent(split)+'&offset=0&length='+limit; const res=await fFetch(url,{},60000); if(!res.ok) throw new Error('HTTP '+res.status); const json=await res.json(); const rows=(json.rows||[]).map(item=>item.row||item); if(!rows.length) throw new Error('No rows returned'); fSetDataset(rows,dataset+' / '+split,'Hugging Face Dataset Viewer',lang); fStatus('hfStatus-'+lang,rows.length+' '+fT(lang,'satır alındı.','rows loaded.'),'success'); }
+  catch(error){fStatus('hfStatus-'+lang,fFriendlyError(error),'danger');}
+}
+
+async function fEnsureDuckDB(lang) {
+  if(DHFrameworkRuntime.duck && DHFrameworkRuntime.duckConnection) return DHFrameworkRuntime.duck;
+  fStatus('duckStatus-'+lang,fT(lang,'DuckDB-WASM yükleniyor…','Loading DuckDB-WASM…'),'info');
+  const duckdb=await import('https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.29.0/+esm');
+  const bundle=await duckdb.selectBundle(duckdb.getJsDelivrBundles());
+  const workerUrl=URL.createObjectURL(new Blob([`importScripts("${bundle.mainWorker}");`],{type:'text/javascript'}));
+  const worker=new Worker(workerUrl); const logger=new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING); const db=new duckdb.AsyncDuckDB(logger,worker); await db.instantiate(bundle.mainModule,bundle.pthreadWorker); URL.revokeObjectURL(workerUrl);
+  DHFrameworkRuntime.duck=db; DHFrameworkRuntime.duckConnection=await db.connect(); return db;
+}
+function fArrowRows(table) {
+  const columns=table.schema.fields.map(f=>f.name); return table.toArray().map(record=>{ const raw=typeof record.toJSON==='function'?record.toJSON():record; const out={}; columns.forEach(c=>{let v=raw[c]; if(typeof v==='bigint') v=Number(v); if(v instanceof Date) v=v.toISOString(); out[c]=fScalar(v);}); return out; });
+}
+async function fSyncDuckDB(lang) {
+  const ds=DHFrameworkRuntime.dataset; if(!ds) throw new Error(fT(lang,'Önce veri yükleyin.','Load data first.')); await fEnsureDuckDB(lang); if(DHFrameworkRuntime.duckSyncedVersion===DHFrameworkRuntime.version) return;
+  const db=DHFrameworkRuntime.duck, conn=DHFrameworkRuntime.duckConnection; try{await db.dropFile('dh_current.json');}catch(_){}
+  await db.registerFileText('dh_current.json',JSON.stringify(ds.rows)); await conn.query("CREATE OR REPLACE TABLE dh_data AS SELECT * FROM read_json_auto('dh_current.json', format='array')"); DHFrameworkRuntime.duckSyncedVersion=DHFrameworkRuntime.version;
+}
+async function runDuckDBQuery(lang) {
+  try { await fSyncDuckDB(lang); const sql=fEl('duckQuery-'+lang).value.trim(); if(!sql) throw new Error('Empty SQL'); fStatus('duckStatus-'+lang,fT(lang,'Sorgu çalışıyor…','Running query…'),'info'); const result=await DHFrameworkRuntime.duckConnection.query(sql); const rows=fArrowRows(result); DHFrameworkRuntime.lastDuckRows=rows; const columns=rows.length?Object.keys(rows[0]):result.schema.fields.map(f=>f.name); fEl('duckResult-'+lang).innerHTML=fRenderRowsTable(rows.slice(0,500),columns,lang); fStatus('duckStatus-'+lang,rows.length+' '+fT(lang,'satır döndü.','rows returned.'),'success'); }
+  catch(error){fStatus('duckStatus-'+lang,fFriendlyError(error),'danger');}
+}
+function useDuckDBResult(lang) { if(!DHFrameworkRuntime.lastDuckRows.length) return fStatus('duckStatus-'+lang,fT(lang,'Önce satır döndüren bir sorgu çalıştırın.','Run a query that returns rows first.'),'warning'); fSetDataset(DHFrameworkRuntime.lastDuckRows.map(r=>({...r})),'DuckDB query result','DuckDB-WASM',lang); }
+async function fLoadParquetBlob(blob,name,lang) {
+  try { await fEnsureDuckDB(lang); const bytes=new Uint8Array(await blob.arrayBuffer()); const db=DHFrameworkRuntime.duck, conn=DHFrameworkRuntime.duckConnection; try{await db.dropFile(name);}catch(_){} await db.registerFileBuffer(name,bytes); const result=await conn.query(`SELECT * FROM read_parquet('${String(name).replace(/'/g,"''")}')`); const rows=fArrowRows(result); fSetDataset(rows,name,'Parquet / DuckDB-WASM',lang); }
+  catch(error){fStatus('datasetStatus-'+lang,fFriendlyError(error),'danger');}
+}
+
+async function fEnsurePyodide(lang) {
+  if(DHFrameworkRuntime.pyodide) return DHFrameworkRuntime.pyodide;
+  fStatus('pyStatus-'+lang,fT(lang,'Pyodide ve bilimsel paketler yükleniyor; ilk açılış biraz sürebilir…','Loading Pyodide and scientific packages; the first load may take a while…'),'info');
+  await fLoadScript('https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js','dh-pyodide');
+  const py=await loadPyodide({indexURL:'https://cdn.jsdelivr.net/pyodide/v0.29.3/full/'}); await py.loadPackage(['pandas','numpy','matplotlib','scikit-learn']); DHFrameworkRuntime.pyodide=py; return py;
+}
+async function fSyncPyodide(lang) {
+  const ds=DHFrameworkRuntime.dataset; if(!ds) throw new Error(fT(lang,'Önce veri yükleyin.','Load data first.')); const py=await fEnsurePyodide(lang); if(DHFrameworkRuntime.pySyncedVersion===DHFrameworkRuntime.version) return py;
+  const rows=ds.rows.slice(0,50000); py.FS.writeFile('/home/pyodide/current_dataset.json',JSON.stringify(rows)); await py.runPythonAsync("import pandas as pd, json\ndf = pd.read_json('/home/pyodide/current_dataset.json')\n"); DHFrameworkRuntime.pySyncedVersion=DHFrameworkRuntime.version; return py;
+}
+async function runPyodideCode(lang) {
+  try { const py=await fSyncPyodide(lang); fStatus('pyStatus-'+lang,fT(lang,'Python kodu çalışıyor…','Running Python code…'),'info'); const code=fEl('pythonCode-'+lang).value; py.globals.set('_dh_user_code',code); const output=await py.runPythonAsync(`
+import io, contextlib, traceback, os
+_buf = io.StringIO()
+try:
+    with contextlib.redirect_stdout(_buf), contextlib.redirect_stderr(_buf):
+        exec(_dh_user_code, globals())
+except Exception:
+    traceback.print_exc(file=_buf)
+_buf.getvalue()
+`); fEl('pythonOutput-'+lang).textContent=String(output); const plotPath='/tmp/dh_plot.png'; const plotWrap=fEl('pythonPlot-'+lang); if(py.FS.analyzePath(plotPath).exists){ const bytes=py.FS.readFile(plotPath); if(DHFrameworkRuntime.pythonPlotURL) URL.revokeObjectURL(DHFrameworkRuntime.pythonPlotURL); DHFrameworkRuntime.pythonPlotURL=URL.createObjectURL(new Blob([bytes],{type:'image/png'})); plotWrap.innerHTML='<img class="img-fluid border rounded" alt="Python plot" src="'+DHFrameworkRuntime.pythonPlotURL+'">'; py.FS.unlink(plotPath); } else plotWrap.innerHTML=''; fStatus('pyStatus-'+lang,fT(lang,'Python işlemi tamamlandı.','Python execution completed.'),'success'); }
+  catch(error){fStatus('pyStatus-'+lang,fFriendlyError(error),'danger');}
+}
+function loadPythonExample(kind,lang) {
+  const profile=`print("Shape:", df.shape)\nprint("\\nMissing values:")\nprint(df.isna().sum().to_string())\nprint("\\nSummary:")\nprint(df.describe(include='all').transpose().fillna('').to_string())`;
+  const plot=`import matplotlib.pyplot as plt\nnum = df.select_dtypes(include='number')\nif num.shape[1] == 0:\n    print("No numeric columns")\nelse:\n    col = num.columns[0]\n    num[col].dropna().plot(kind='hist', bins=12, title=f"Distribution: {col}")\n    plt.tight_layout()\n    plt.savefig('/tmp/dh_plot.png', dpi=160)\n    plt.close()\n    print("Plot created for", col)`;
+  fEl('pythonCode-'+lang).value=kind==='plot'?plot:profile;
+}
+
+async function fEnsureTF() { if(window.tf) return window.tf; await fLoadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js','dh-tfjs'); return window.tf; }
+async function trainTensorFlowModel(lang) {
+  try {
+    const ds=DHFrameworkRuntime.dataset; if(!ds) throw new Error(fT(lang,'Önce veri yükleyin.','Load data first.')); const xCol=fEl('tfX-'+lang).value,yCol=fEl('tfY-'+lang).value,epochs=Math.max(10,Math.min(500,Number(fEl('tfEpochs-'+lang).value)||80)); if(!xCol||!yCol||xCol===yCol) throw new Error(fT(lang,'İki farklı sayısal sütun seçin.','Select two different numeric columns.'));
+    const pairs=ds.rows.map(r=>[Number(String(r[xCol]).replace(',','.')),Number(String(r[yCol]).replace(',','.'))]).filter(p=>p.every(Number.isFinite)); if(pairs.length<5) throw new Error(fT(lang,'En az beş geçerli sayısal kayıt gerekli.','At least five valid numeric records are required.'));
+    const tf=await fEnsureTF(); fStatus('tfStatus-'+lang,fT(lang,'TensorFlow.js modeli eğitiliyor…','Training TensorFlow.js model…'),'info');
+    const xs=pairs.map(p=>p[0]),ys=pairs.map(p=>p[1]),xMin=Math.min(...xs),xMax=Math.max(...xs),yMin=Math.min(...ys),yMax=Math.max(...ys),xRange=xMax-xMin||1,yRange=yMax-yMin||1;
+    const xTensor=tf.tensor2d(xs.map(v=>[(v-xMin)/xRange])); const yTensor=tf.tensor2d(ys.map(v=>[(v-yMin)/yRange]));
+    const model=tf.sequential(); model.add(tf.layers.dense({units:8,activation:'relu',inputShape:[1]})); model.add(tf.layers.dense({units:1})); model.compile({optimizer:tf.train.adam(0.03),loss:'meanSquaredError'}); const losses=[];
+    await model.fit(xTensor,yTensor,{epochs,batchSize:Math.min(16,pairs.length),shuffle:true,callbacks:{onEpochEnd:async(epoch,logs)=>{losses.push(Number(logs.loss)); if(epoch%10===0) fStatus('tfStatus-'+lang,fT(lang,'Eğitim epoch ','Training epoch ')+(epoch+1)+' / '+epochs,'info');}}});
+    const predNorm=Array.from(await model.predict(xTensor).data()),pred=predNorm.map(v=>v*yRange+yMin); const yMean=ys.reduce((a,b)=>a+b,0)/ys.length,ssRes=ys.reduce((s,v,i)=>s+(v-pred[i])**2,0),ssTot=ys.reduce((s,v)=>s+(v-yMean)**2,0),r2=ssTot?1-ssRes/ssTot:0;
+    Plotly.newPlot('tfLoss-'+lang,[{x:losses.map((_,i)=>i+1),y:losses,type:'scatter',mode:'lines',name:'loss'}],{title:fT(lang,'Eğitim Kaybı','Training Loss'),xaxis:{title:'Epoch'},yaxis:{title:'MSE'},margin:{t:50}},{responsive:true});
+    Plotly.newPlot('tfPred-'+lang,[{x:xs,y:ys,type:'scatter',mode:'markers',name:fT(lang,'Gerçek','Actual')},{x:xs,y:pred,type:'scatter',mode:'markers',name:fT(lang,'Tahmin','Prediction')}],{title:fT(lang,'Gerçek ve Tahmin · R² = ','Actual vs Prediction · R² = ')+r2.toFixed(3),xaxis:{title:xCol},yaxis:{title:yCol},margin:{t:55}},{responsive:true});
+    xTensor.dispose(); yTensor.dispose(); model.dispose(); fStatus('tfStatus-'+lang,fT(lang,'Model eğitildi. R²: ','Model trained. R²: ')+r2.toFixed(3),'success');
+  } catch(error){fStatus('tfStatus-'+lang,fFriendlyError(error),'danger');}
+}
+
+async function fEnsureTransformers(lang) {
+  if(DHFrameworkRuntime.transformersModule) return DHFrameworkRuntime.transformersModule;
+  fStatus('transformerStatus-'+lang,fT(lang,'Transformers.js çalışma zamanı yükleniyor…','Loading the Transformers.js runtime…'),'info');
+  try { DHFrameworkRuntime.transformersModule=await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1/+esm'); }
+  catch(_) { DHFrameworkRuntime.transformersModule=await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/+esm'); }
+  return DHFrameworkRuntime.transformersModule;
+}
+async function runTransformerSentiment(lang) {
+  try { const model=fEl('transformerModel-'+lang).value.trim(),text=fEl('transformerText-'+lang).value.trim(); if(!model||!text) throw new Error(fT(lang,'Model ve metin gerekli.','Model and text are required.')); const mod=await fEnsureTransformers(lang); let pipe=DHFrameworkRuntime.transformerPipelines.get(model); if(!pipe){ fStatus('transformerStatus-'+lang,fT(lang,'Model indiriliyor ve önbelleğe alınıyor…','Downloading and caching the model…'),'info'); pipe=await mod.pipeline('sentiment-analysis',model,{progress_callback:p=>{if(p&&p.status) fStatus('transformerStatus-'+lang,fEsc(p.status)+(p.progress!=null?' '+Math.round(p.progress)+'%':''),'info');}}); DHFrameworkRuntime.transformerPipelines.set(model,pipe); } const result=await pipe(text); fEl('transformerOutput-'+lang).textContent=JSON.stringify(result,null,2); fStatus('transformerStatus-'+lang,fT(lang,'Çıkarım tarayıcıda tamamlandı.','Inference completed in the browser.'),'success'); }
+  catch(error){fStatus('transformerStatus-'+lang,fFriendlyError(error),'danger');}
+}
+
+async function fEnsureOpenCV(lang) {
+  if(window.cv && window.cv.Mat) return window.cv;
+  fStatus('opencvStatus-'+lang,fT(lang,'OpenCV.js yükleniyor…','Loading OpenCV.js…'),'info'); await fLoadScript('https://docs.opencv.org/4.x/opencv.js','dh-opencv');
+  if(window.cv && typeof window.cv.then==='function') window.cv=await window.cv;
+  const start=Date.now(); while(!(window.cv&&window.cv.Mat)){ if(Date.now()-start>60000) throw new Error('OpenCV initialization timeout'); await new Promise(r=>setTimeout(r,250)); }
+  return window.cv;
+}
+function loadOpenCVImage(event,lang) {
+  const file=event.target.files&&event.target.files[0]; if(!file) return; const img=new Image(); const url=URL.createObjectURL(file); img.onload=()=>{ const max=1200,scale=Math.min(1,max/Math.max(img.width,img.height)),canvas=fEl('opencvSource-'+lang); canvas.width=Math.round(img.width*scale); canvas.height=Math.round(img.height*scale); canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height); URL.revokeObjectURL(url); fStatus('opencvStatus-'+lang,fT(lang,'Görsel hazır.','Image ready.'),'success');}; img.src=url;
+}
+async function processOpenCV(lang) {
+  try { const cv=await fEnsureOpenCV(lang),srcCanvas=fEl('opencvSource-'+lang); if(!srcCanvas.width) throw new Error(fT(lang,'Önce görsel seçin.','Select an image first.')); const src=cv.imread(srcCanvas),gray=new cv.Mat(),dst=new cv.Mat(),mode=fEl('opencvMode-'+lang).value; cv.cvtColor(src,gray,cv.COLOR_RGBA2GRAY); if(mode==='gray') gray.copyTo(dst); else if(mode==='threshold') cv.threshold(gray,dst,0,255,cv.THRESH_BINARY+cv.THRESH_OTSU); else cv.Canny(gray,dst,70,160); cv.imshow('opencvOutput-'+lang,dst); src.delete();gray.delete();dst.delete();fStatus('opencvStatus-'+lang,fT(lang,'Görsel tarayıcı içinde işlendi.','Image processed in the browser.'),'success'); }
+  catch(error){fStatus('opencvStatus-'+lang,fFriendlyError(error),'danger');}
+}
+function downloadCanvas(id,filename){const canvas=fEl(id);if(!canvas||!canvas.width)return;canvas.toBlob(blob=>fDownloadBlob(filename,blob),'image/png');}
+
+async function fEnsureCytoscape(){if(window.cytoscape)return window.cytoscape;await fLoadScript('https://cdn.jsdelivr.net/npm/cytoscape@3.33.0/dist/cytoscape.min.js','dh-cytoscape');return window.cytoscape;}
+async function buildCytoscapeNetwork(lang) {
+  try { const ds=DHFrameworkRuntime.dataset;if(!ds)throw new Error(fT(lang,'Önce veri yükleyin.','Load data first.'));const s=fEl('netSource-'+lang).value,t=fEl('netTarget-'+lang).value,w=fEl('netWeight-'+lang).value;if(!s||!t)throw new Error(fT(lang,'Kaynak ve hedef sütunlarını seçin.','Select source and target columns.'));await fEnsureCytoscape();const nodes=new Set(),edges=[];ds.rows.slice(0,3000).forEach((r,i)=>{const a=String(r[s]??'').trim(),b=String(r[t]??'').trim();if(!a||!b)return;nodes.add(a);nodes.add(b);edges.push({data:{id:'e'+i,source:a,target:b,weight:Number(r[w])||1}});});const elements=[...Array.from(nodes).map(id=>({data:{id,label:id}})),...edges];if(DHFrameworkRuntime.cytoscape[lang])DHFrameworkRuntime.cytoscape[lang].destroy();const cy=cytoscape({container:fEl('cyNetwork-'+lang),elements,style:[{selector:'node',style:{'background-color':'#009688','label':'data(label)','font-size':'10px','text-wrap':'wrap','text-max-width':'100px'}},{selector:'edge',style:{'width':'mapData(weight,1,10,1,6)','line-color':'#90a4ae','target-arrow-color':'#90a4ae','curve-style':'bezier','opacity':.75}}],layout:{name:nodes.size>80?'cose':'circle',animate:false,padding:30}});DHFrameworkRuntime.cytoscape[lang]=cy;const density=nodes.size>1?edges.length/(nodes.size*(nodes.size-1)):0;fStatus('networkStatus-'+lang,nodes.size+' '+fT(lang,'düğüm','nodes')+' · '+edges.length+' '+fT(lang,'bağlantı','edges')+' · '+fT(lang,'yoğunluk ','density ')+density.toFixed(4),'success'); }
+  catch(error){fStatus('networkStatus-'+lang,fFriendlyError(error),'danger');}
+}
+function downloadNetworkPNG(lang){const cy=DHFrameworkRuntime.cytoscape[lang];if(!cy)return fStatus('networkStatus-'+lang,fT(lang,'Önce ağı oluşturun.','Build the network first.'),'warning');fetch(cy.png({full:true,scale:2,bg:'#ffffff'})).then(r=>r.blob()).then(b=>fDownloadBlob('network-'+lang+'.png',b));}
+
+async function fEnsureLeaflet(){if(window.L)return window.L;fLoadCSS('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css','dh-leaflet-css');await fLoadScript('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js','dh-leaflet');return window.L;}
+async function buildLeafletMap(lang) {
+  try { const ds=DHFrameworkRuntime.dataset;if(!ds)throw new Error(fT(lang,'Önce veri yükleyin.','Load data first.'));const latC=fEl('mapLat-'+lang).value,lonC=fEl('mapLon-'+lang).value,labelC=fEl('mapLabel-'+lang).value;if(!latC||!lonC)throw new Error(fT(lang,'Enlem ve boylam sütunlarını seçin.','Select latitude and longitude columns.'));await fEnsureLeaflet();if(DHFrameworkRuntime.maps[lang])DHFrameworkRuntime.maps[lang].remove();const map=L.map('leafletMap-'+lang);DHFrameworkRuntime.maps[lang]=map;L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);const points=[];ds.rows.slice(0,3000).forEach(r=>{const lat=Number(String(r[latC]).replace(',','.')),lon=Number(String(r[lonC]).replace(',','.'));if(!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>90||Math.abs(lon)>180)return;points.push([lat,lon]);L.marker([lat,lon]).addTo(map).bindPopup('<strong>'+fEsc(labelC?r[labelC]:'')+'</strong><br>'+fEsc(latC)+': '+lat+'<br>'+fEsc(lonC)+': '+lon);});if(!points.length)throw new Error(fT(lang,'Geçerli koordinat bulunamadı.','No valid coordinates found.'));map.fitBounds(points,{padding:[30,30],maxZoom:12});setTimeout(()=>map.invalidateSize(),100);fStatus('mapStatus-'+lang,points.length+' '+fT(lang,'konum haritalandı.','locations mapped.'),'success'); }
+  catch(error){fStatus('mapStatus-'+lang,fFriendlyError(error),'danger');}
+}
+
+function runFrameworkDiagnostics(lang) {
+  const tests=[
+    ['WebAssembly',typeof WebAssembly==='object'],['Web Worker',typeof Worker!=='undefined'],['File API',typeof FileReader!=='undefined'],['IndexedDB',typeof indexedDB!=='undefined'],['Canvas',!!document.createElement('canvas').getContext],['WebGPU',!!navigator.gpu],['Service Worker','serviceWorker' in navigator],['Cross-Origin Isolation',window.crossOriginIsolated===true]
+  ];
+  const rows=tests.map(([name,ok])=>'<tr><td>'+fEsc(name)+'</td><td><span class="badge bg-'+(ok?'success':'secondary')+'">'+fT(lang,ok?'Destekleniyor':'Yok / sınırlı',ok?'Supported':'Unavailable / limited')+'</span></td></tr>').join('');
+  fEl('frameworkDiagnostics-'+lang).innerHTML='<div class="table-responsive"><table class="table table-bordered table-sm"><thead><tr><th>'+fT(lang,'Özellik','Capability')+'</th><th>'+fT(lang,'Durum','Status')+'</th></tr></thead><tbody>'+rows+'</tbody></table></div><div class="alert alert-info">'+fT(lang,'WebGPU yoksa Transformers.js ve TensorFlow.js WebAssembly/CPU üzerinde çalışmaya devam eder. DuckDB ve Pyodide WebAssembly gerektirir.','Without WebGPU, Transformers.js and TensorFlow.js continue on WebAssembly/CPU. DuckDB and Pyodide require WebAssembly.')+'</div>';
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  // Preserve the original portal and initialise only the new workspace controls.
+  loadSampleDataset('tr');
+  setTimeout(()=>{if(window.AOS&&AOS.refresh)AOS.refresh();},300);
+});
 
   </script>
 </body>
